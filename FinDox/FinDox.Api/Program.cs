@@ -1,11 +1,15 @@
 using FinDox.Domain.Interfaces;
 using FinDox.Repository;
+using MediatR;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly(), Assembly.Load("FinDox.Application"));
+
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
-//builder.Services.AddSingleton<AppConnectionFactory>();
+builder.Services.AddSingleton<AppConnectionFactory>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

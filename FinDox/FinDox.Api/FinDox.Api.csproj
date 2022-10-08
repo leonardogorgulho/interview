@@ -7,10 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="11.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FinDox.Application\FinDox.Application.csproj" />
     <ProjectReference Include="..\FinDox.Domain\FinDox.Domain.csproj" />
     <ProjectReference Include="..\FinDox.Repository\FinDox.Repository.csproj" />
   </ItemGroup>

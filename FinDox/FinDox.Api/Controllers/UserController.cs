@@ -1,5 +1,7 @@
-﻿using FinDox.Domain.Entities;
-using FinDox.Domain.Interfaces;
+﻿using FinDox.Application.Commands;
+using FinDox.Application.Queries;
+using FinDox.Domain.DataTransfer;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinDox.Api.Controllers
@@ -8,18 +10,18 @@ namespace FinDox.Api.Controllers
     [Route("[controller]")]
     public class UserController : Controller
     {
-        IUserRepository _userRepository;
+        IMediator _mediator;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IMediator mediator)
         {
-            _userRepository = userRepository;
+            _mediator = mediator;
         }
 
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var user = await _userRepository.Get(id);
+            var user = await _mediator.Send(new GetUserQuery(id));
 
             if (user == null)
             {
@@ -30,11 +32,44 @@ namespace FinDox.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] User user)
+        public async Task<IActionResult> Post([FromBody] UserEntryRequest userRequest)
         {
-            var userAdded = await _userRepository.Add(user);
+            var user = await _mediator.Send(new SaveUserCommand(userRequest));
 
-            return Ok(userAdded);
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(user);
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] UserEntryRequest userRequest)
+        {
+            var user = await _mediator.Send(new SaveUserCommand(userRequest, id));
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var removed = await _mediator.Send(new RemoveUserCommand(id));
+
+            if (!removed)
+            {
+                return NotFound();
+            }
+
+            return Ok();
         }
     }
 }

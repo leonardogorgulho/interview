@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{09DE969F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{9BA829EC-56A5-4BD1-8431-CCA2B63285D2}"
 	ProjectSection(SolutionItems) = preProject
-		1_type_creation.sql = 1_type_creation.sql
+		scripts\1_type_creation.sql = scripts\1_type_creation.sql
 		scripts\2_table_creation.sql = scripts\2_table_creation.sql
 		scripts\3_sp_creation.sql = scripts\3_sp_creation.sql
 	EndProjectSection

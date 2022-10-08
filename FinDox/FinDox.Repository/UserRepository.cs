@@ -2,48 +2,28 @@
 using FinDox.Domain.Entities;
 using FinDox.Domain.Interfaces;
 using FinDox.Domain.Types;
-using Npgsql;
 using System.Data;
 using static Dapper.SqlMapper;
 
 namespace FinDox.Repository
 {
-    public class UserEntryParameter : ICustomQueryParameter
-    {
-        private readonly UserEntry _userEntry;
-
-        public UserEntryParameter(string name, string login, string password)
-        {
-            _userEntry = new UserEntry()
-            {
-                Name = name,
-                Login = login,
-                Password = password
-            };
-        }
-
-        public void AddParameter(IDbCommand command, string name)
-        {
-            var parameter = new NpgsqlParameter
-            {
-                ParameterName = name,
-                Value = _userEntry,
-                DataTypeName = "core.user_entry"
-            };
-            command.Parameters.Add(parameter);
-        }
-    }
-
     public class UserRepository : IUserRepository
     {
-        public async Task<User> Add(User entity)
+        private AppConnectionFactory _appConnectionFactory;
+
+        public UserRepository(AppConnectionFactory appConnectionFactory)
         {
-            using var connection = AppConnectionFactory.GetConnection();
+            _appConnectionFactory = appConnectionFactory;
+        }
+
+        public async Task<User?> Add(User entity)
+        {
+            using var connection = _appConnectionFactory.GetConnection();
 
             var id = await connection.ExecuteScalarAsync<int>("core.add_user",
             new
             {
-                p_user = AppConnectionFactory.CreateParameter<UserEntry>("core.user_entry", UserEntry.MapFrom(entity))
+                p_user = _appConnectionFactory.CreateParameter<UserEntry>("core.user_entry", UserEntry.MapFrom(entity))
             },
             commandType: CommandType.StoredProcedure);
 
@@ -52,9 +32,9 @@ namespace FinDox.Repository
             return entity;
         }
 
-        public async Task<User> Get(int id)
+        public async Task<User?> Get(int id)
         {
-            using var connection = AppConnectionFactory.GetConnection();
+            using var connection = _appConnectionFactory.GetConnection();
 
             var result = await connection.QueryFirstOrDefaultAsync<User>(
                 "core.get_user",
@@ -64,19 +44,46 @@ namespace FinDox.Repository
             return result;
         }
 
-        public Task<User> GetAll(IFilter<User> filter)
+        public async Task<bool> Remove(int id)
         {
-            throw new NotImplementedException();
+            using var connection = _appConnectionFactory.GetConnection();
+
+            try
+            {
+                await connection.ExecuteAsync(
+                    "core.delete_user",
+                    new { p_id = id },
+                    commandType: CommandType.StoredProcedure);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
-        public Task<bool> Remove(int id)
+        public async Task<User?> Update(User entity)
         {
-            throw new NotImplementedException();
-        }
+            using var connection = _appConnectionFactory.GetConnection();
 
-        public Task<int> Update(User entity)
-        {
-            throw new NotImplementedException();
+            try
+            {
+                await connection.ExecuteAsync(
+                    "core.update_user",
+                    new
+                    {
+                        p_id = entity.Id,
+                        p_user = _appConnectionFactory.CreateParameter<UserEntry>("core.user_entry", UserEntry.MapFrom(entity))
+                    },
+                    commandType: CommandType.StoredProcedure);
+
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }

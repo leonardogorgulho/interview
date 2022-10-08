@@ -14,3 +14,15 @@ CREATE TABLE IF NOT EXISTS core.user
 ALTER TABLE IF EXISTS core.user
     OWNER to postgres;
 	
+-----------------------------
+
+CREATE TABLE IF NOT EXISTS core.group
+(
+    id serial NOT NULL,
+    name character varying(50) NOT NULL,
+    CONSTRAINT pk_group PRIMARY KEY (id), 
+	CONSTRAINT uq_group_name UNIQUE (name)
+);
+
+ALTER TABLE IF EXISTS core.group
+    OWNER to postgres;
