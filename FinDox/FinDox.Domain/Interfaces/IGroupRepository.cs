@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿
+using FinDox.Domain.Entities;
 
 namespace FinDox.Domain.Interfaces
 {

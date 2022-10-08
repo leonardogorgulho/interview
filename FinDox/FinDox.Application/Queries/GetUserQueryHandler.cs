@@ -5,7 +5,7 @@ using MediatR;
 
 namespace FinDox.Application.Queries
 {
-    public class GetUserQueryHandler : IRequestHandler<GetUserQuery, UserResponse>
+    public class GetUserQueryHandler : IRequestHandler<GetUserQuery, UserResponse?>
     {
         IUserRepository _userRepository;
 
@@ -14,10 +14,10 @@ namespace FinDox.Application.Queries
             _userRepository = userRepository;
         }
 
-        public async Task<UserResponse> Handle(GetUserQuery request, CancellationToken cancellationToken)
+        public async Task<UserResponse?> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.Get(request.Id);
-            return user.ToUserResponse();
+            return user?.ToUserResponse();
         }
     }
 }

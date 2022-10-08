@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly(), Assembly.Load("FinDox.Application"));
 
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<IGroupRepository, GroupRepository>();
 builder.Services.AddSingleton<AppConnectionFactory>();
 
 builder.Services.AddControllers();

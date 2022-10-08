@@ -1,28 +1,88 @@
-﻿using FinDox.Domain.Interfaces;
-using System.Text.RegularExpressions;
+﻿
+using Dapper;
+using FinDox.Domain.Entities;
+using FinDox.Domain.Interfaces;
+using System.Data;
 
 namespace FinDox.Repository
 {
     public class GroupRepository : IGroupRepository
     {
-        public Task<Group?> Add(Group entity)
+        private AppConnectionFactory _appConnectionFactory;
+
+        public GroupRepository(AppConnectionFactory appConnectionFactory)
         {
-            throw new NotImplementedException();
+            _appConnectionFactory = appConnectionFactory;
         }
 
-        public Task<Group?> Get(int id)
+        public async Task<Group?> Add(Group entity)
         {
-            throw new NotImplementedException();
+            using var connection = _appConnectionFactory.GetConnection();
+
+            var id = await connection.ExecuteScalarAsync<int>("core.add_group",
+            new
+            {
+                p_name = entity.Name
+            },
+            commandType: CommandType.StoredProcedure);
+
+            entity.Id = id;
+
+            return entity;
         }
 
-        public Task<bool> Remove(int id)
+        public async Task<Group?> Get(int id)
         {
-            throw new NotImplementedException();
+            using var connection = _appConnectionFactory.GetConnection();
+
+            var result = await connection.QueryFirstOrDefaultAsync<Group>(
+                "core.get_group",
+                new { p_id = id },
+                commandType: CommandType.StoredProcedure);
+
+            return result;
         }
 
-        public Task<Group?> Update(Group entity)
+        public async Task<bool> Remove(int id)
         {
-            throw new NotImplementedException();
+            using var connection = _appConnectionFactory.GetConnection();
+
+            try
+            {
+                await connection.ExecuteAsync(
+                    "core.delete_group",
+                    new { p_id = id },
+                    commandType: CommandType.StoredProcedure);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<Group?> Update(Group entity)
+        {
+            using var connection = _appConnectionFactory.GetConnection();
+
+            try
+            {
+                await connection.ExecuteAsync(
+                    "core.update_group",
+                    new
+                    {
+                        p_id = entity.Id,
+                        p_name = entity.Name
+                    },
+                    commandType: CommandType.StoredProcedure);
+
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }
