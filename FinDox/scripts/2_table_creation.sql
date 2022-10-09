@@ -26,3 +26,20 @@ CREATE TABLE IF NOT EXISTS core.group
 
 ALTER TABLE IF EXISTS core.group
     OWNER to postgres;
+
+-----------------------------
+
+CREATE TABLE IF NOT EXISTS core.user_group
+(
+    user_id integer NOT NULL,
+	group_id integer NOT NULL,
+    CONSTRAINT pk_user_group PRIMARY KEY (user_id, group_id),
+	CONSTRAINT fk_user_group_user FOREIGN KEY (user_id)
+		REFERENCES core.user (id),
+	CONSTRAINT fk_user_group_group FOREIGN KEY (group_id)
+		REFERENCES core.group (id),
+);
+
+ALTER TABLE IF EXISTS core.user_group
+    OWNER to postgres;
+

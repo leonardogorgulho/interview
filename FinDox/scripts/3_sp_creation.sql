@@ -133,3 +133,68 @@ $BODY$;
 
 ALTER FUNCTION core.update_group(integer, character varying)
     OWNER TO postgres;
+
+---------------------------------
+
+CREATE OR REPLACE FUNCTION core.add_user_group(
+	p_groupid integer,
+	p_userid integer)
+    RETURNS boolean
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+	p_link_exists int := 0;
+BEGIN
+	SELECT count(*) INTO p_link_exists FROM core.user_group WHERE user_id = p_userid and group_id = p_groupid;
+
+	if p_link_exists = 0 then
+		INSERT INTO core.user_group(group_id, user_id)
+		VALUES(p_groupid, p_userid);
+	end if;
+	
+	return p_link_exists = 0;
+END;
+$BODY$;
+
+ALTER FUNCTION core.add_user_group(integer, integer)
+    OWNER TO postgres;
+
+
+CREATE OR REPLACE FUNCTION core.remove_user_group(
+	p_groupid integer,
+	p_userid integer)
+    RETURNS boolean
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+	p_affected int := 0;
+BEGIN
+	delete from core.user_group where user_id = p_userid and group_id = p_groupid;
+	get diagnostics p_affected = row_count;
+	return p_affected > 0;
+END;
+$BODY$;
+
+ALTER FUNCTION core.remove_user_group(integer, integer)
+    OWNER TO postgres;
+
+
+
+CREATE OR REPLACE FUNCTION core.get_users_from_group(p_groupid integer)
+    RETURNS SETOF core.user
+    LANGUAGE 'sql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+	SELECT u.id, u.name, u.login, null as password 
+	FROM core.user_group ug
+	INNER JOIN core.user u ON ug.user_id = u.id
+	WHERE ug.group_id = p_groupid;
+$BODY$;
+
+ALTER FUNCTION core.get_users_from_group(integer)
+    OWNER TO postgres;

@@ -1,7 +1,9 @@
 ﻿using FinDox.Application.Commands;
 using FinDox.Application.Queries;
+using FinDox.Domain.Entities;
 using FinDox.Domain.Request;
 using MediatR;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinDox.Api.Controllers
@@ -41,7 +43,7 @@ namespace FinDox.Api.Controllers
                 return BadRequest();
             }
 
-            return Ok(group);
+            return Created($"{Request.GetDisplayUrl()}/{group.Id}", group);
         }
 
         [HttpPut]
@@ -70,6 +72,48 @@ namespace FinDox.Api.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpPost]
+        [Route("AddUserToGroup")]
+        public async Task<IActionResult> AddUser([FromBody] UserGroup userGroup)
+        {
+            var isAdded = await _mediator.Send(new AddUserToGroupCommand(userGroup));
+
+            if (!isAdded)
+            {
+                return BadRequest($"User {userGroup.UserId} is already attached to group {userGroup.GroupId}");
+            }
+
+            return Ok(userGroup);
+        }
+
+        [HttpDelete]
+        [Route("{groupId}/user/{userId}")]
+        public async Task<IActionResult> RemoveUser(int groupId, int userId)
+        {
+            var isRemoved = await _mediator.Send(new RemoveUserFromGroupCommand(new() { GroupId = groupId, UserId = userId }));
+
+            if (!isRemoved)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("{groupId}/users")]
+        public async Task<IActionResult> GetUsersFromGroup(int groupId)
+        {
+            var groupWithUsers = await _mediator.Send(new GetUsersFromGroupQuery(groupId));
+
+            if (groupWithUsers == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(groupWithUsers);
         }
     }
 }

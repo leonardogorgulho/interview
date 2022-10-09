@@ -2,6 +2,7 @@
 using Dapper;
 using FinDox.Domain.Entities;
 using FinDox.Domain.Interfaces;
+using FinDox.Domain.Response;
 using System.Data;
 
 namespace FinDox.Repository
@@ -29,6 +30,38 @@ namespace FinDox.Repository
             entity.Id = id;
 
             return entity;
+        }
+
+        public async Task<bool> AddUser(UserGroup userGroup)
+        {
+            using var connection = _appConnectionFactory.GetConnection();
+
+            var result = await connection.ExecuteScalarAsync<bool>(
+                "core.add_user_group",
+                new
+                {
+                    p_userid = userGroup.UserId,
+                    p_groupid = userGroup.GroupId
+                },
+                commandType: CommandType.StoredProcedure);
+
+            return result;
+        }
+
+        public async Task<bool> RemoveUser(UserGroup userGroup)
+        {
+            using var connection = _appConnectionFactory.GetConnection();
+
+            var result = await connection.ExecuteScalarAsync<bool>(
+                "core.remove_user_group",
+                new
+                {
+                    p_userid = userGroup.UserId,
+                    p_groupid = userGroup.GroupId
+                },
+                commandType: CommandType.StoredProcedure);
+
+            return result;
         }
 
         public async Task<Group?> Get(int id)
@@ -83,6 +116,34 @@ namespace FinDox.Repository
             {
                 return null;
             }
+        }
+
+        public async Task<GroupWithUsers> GetGroupWithUsers(int groupId)
+        {
+            using var connection = _appConnectionFactory.GetConnection();
+
+            var group = await connection.QueryFirstOrDefaultAsync<Group>(
+                "core.get_group",
+                new { p_id = groupId },
+                commandType: CommandType.StoredProcedure);
+
+            if (group != null)
+            {
+                var users = await connection.QueryAsync<UserResponse>(
+                    "core.get_users_from_group",
+                    new { p_groupid = groupId },
+                    commandType: CommandType.StoredProcedure);
+
+
+                return new GroupWithUsers()
+                {
+                    Id = group.Id,
+                    Name = group.Name,
+                    Users = users?.ToList(),
+                };
+            }
+
+            return null;
         }
     }
 }
