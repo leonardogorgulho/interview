@@ -7,15 +7,20 @@ namespace FinDox.Api.Controllers
     [Route("[controller]")]
     public class DocumentController : Controller
     {
-        [HttpPost("Upload")]
-        public async Task<ActionResult> UploadImage(IFormFile file)
+        IConfiguration _configuration;
+
+        public DocumentController(IConfiguration configuration)
         {
-            string filePath = @$"D:\interviewFiles\{file.FileName}";
+            _configuration = configuration;
+        }
+
+        [HttpPost("Upload")]
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            string filePath = @$"{_configuration.GetValue<string>("SharedDirectory")}\{file.FileName}";
             using (Stream fileStream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(fileStream);
-
-                FileAttributes attributes = System.IO.File.GetAttributes(filePath);
             }
 
             return Ok();
@@ -32,7 +37,9 @@ namespace FinDox.Api.Controllers
 
             if (new FileExtensionContentTypeProvider().TryGetContentType(Path.GetFileName(url), out contentType))
             {
-                return File(bytes, contentType, Path.GetFileName(url));
+
+                var file = File(bytes, contentType, Path.GetFileName(url));
+                return file;
             };
 
             return File(bytes, "text/plain", Path.GetFileName(url));
