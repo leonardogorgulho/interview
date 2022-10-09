@@ -1,4 +1,5 @@
-﻿CREATE TYPE core.user_entry AS
+﻿/*
+CREATE TYPE core.user_entry AS
 (
 	name character varying(150),
 	login character varying(30),
@@ -7,3 +8,4 @@
 
 ALTER TYPE core.user_entry
     OWNER TO postgres;
+*/

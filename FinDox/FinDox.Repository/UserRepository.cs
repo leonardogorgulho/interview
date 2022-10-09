@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using FinDox.Domain.Entities;
 using FinDox.Domain.Interfaces;
+using FinDox.Domain.Request;
+using FinDox.Domain.Response;
 using FinDox.Domain.Types;
 using System.Data;
 using static Dapper.SqlMapper;
@@ -39,6 +41,18 @@ namespace FinDox.Repository
             var result = await connection.QueryFirstOrDefaultAsync<User>(
                 "core.get_user",
                 new { p_id = id },
+                commandType: CommandType.StoredProcedure);
+
+            return result;
+        }
+
+        public async Task<UserResponse> Login(LoginRequest request)
+        {
+            using var connection = _appConnectionFactory.GetConnection();
+
+            var result = await connection.QueryFirstOrDefaultAsync<UserResponse>(
+                "core.login",
+                new { p_login = request.Login, p_password = request.Password },
                 commandType: CommandType.StoredProcedure);
 
             return result;

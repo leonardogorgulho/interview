@@ -1,4 +1,5 @@
-﻿CREATE SCHEMA IF NOT EXISTS core
+﻿/*
+CREATE SCHEMA IF NOT EXISTS core
     AUTHORIZATION postgres;
 
 CREATE TABLE IF NOT EXISTS core.user
@@ -14,7 +15,6 @@ CREATE TABLE IF NOT EXISTS core.user
 ALTER TABLE IF EXISTS core.user
     OWNER to postgres;
 	
------------------------------
 
 CREATE TABLE IF NOT EXISTS core.group
 (
@@ -27,7 +27,6 @@ CREATE TABLE IF NOT EXISTS core.group
 ALTER TABLE IF EXISTS core.group
     OWNER to postgres;
 
------------------------------
 
 CREATE TABLE IF NOT EXISTS core.user_group
 (
@@ -43,3 +42,4 @@ CREATE TABLE IF NOT EXISTS core.user_group
 ALTER TABLE IF EXISTS core.user_group
     OWNER to postgres;
 
+*/

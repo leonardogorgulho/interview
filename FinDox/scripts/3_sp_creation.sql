@@ -1,4 +1,19 @@
-﻿CREATE OR REPLACE FUNCTION core.add_user(
+﻿/*
+CREATE OR REPLACE FUNCTION core.login(p_login character varying, p_password character varying)
+    RETURNS SETOF core.user
+    LANGUAGE 'sql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+	SELECT u.id, u.name, u.login, null as password 
+	FROM core.user u
+	WHERE u.login = p_login AND u.password = p_password;
+$BODY$;
+
+ALTER FUNCTION core.login(character varying, character varying)
+    OWNER TO postgres;
+
+CREATE OR REPLACE FUNCTION core.add_user(
 	p_user core.user_entry)
     RETURNS integer
     LANGUAGE 'sql'
@@ -67,7 +82,6 @@ ALTER FUNCTION core.update_user(integer, core.user_entry)
 
 
 
------------------------------------------------------------------
 
 
 
@@ -134,7 +148,6 @@ $BODY$;
 ALTER FUNCTION core.update_group(integer, character varying)
     OWNER TO postgres;
 
----------------------------------
 
 CREATE OR REPLACE FUNCTION core.add_user_group(
 	p_groupid integer,
@@ -198,3 +211,4 @@ $BODY$;
 
 ALTER FUNCTION core.get_users_from_group(integer)
     OWNER TO postgres;
+*/
