@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 
 namespace FinDox.Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class DocumentController : Controller
     {

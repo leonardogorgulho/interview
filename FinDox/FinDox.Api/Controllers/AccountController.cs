@@ -1,12 +1,14 @@
 ﻿using FinDox.Application.Queries;
 using FinDox.Domain.Request;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 
 namespace FinDox.Api.Controllers
 {
     [ApiController]
+    [AllowAnonymous]
     [Route("[controller]")]
     public class AccountController : Controller
     {

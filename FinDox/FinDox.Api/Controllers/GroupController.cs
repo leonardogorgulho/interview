@@ -3,12 +3,14 @@ using FinDox.Application.Queries;
 using FinDox.Domain.Entities;
 using FinDox.Domain.Request;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinDox.Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class GroupController : Controller
     {

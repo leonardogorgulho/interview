@@ -2,11 +2,13 @@
 using FinDox.Application.Queries;
 using FinDox.Domain.DataTransfer;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinDox.Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class UserController : Controller
     {
