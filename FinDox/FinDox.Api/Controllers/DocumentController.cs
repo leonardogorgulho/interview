@@ -1,50 +1,50 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FinDox.Application.Commands;
+using FinDox.Application.Queries;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace FinDox.Api.Controllers
 {
     [ApiController]
     [Authorize]
     [Route("[controller]")]
-    public class DocumentController : Controller
+    public class DocumentController : ControllerBase
     {
-        IConfiguration _configuration;
+        IMediator _mediator;
 
-        public DocumentController(IConfiguration configuration)
+        public DocumentController(IMediator mediator)
         {
-            _configuration = configuration;
+            _mediator = mediator;
         }
 
-        [HttpPost("Upload")]
-        public async Task<IActionResult> UploadImage(IFormFile file)
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> Post(DateTime? postedData, string? name, string? description, string? category, IFormFile file)
         {
-            string filePath = @$"{_configuration.GetValue<string>("SharedDirectory")}\{file.FileName}";
-            using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+            BinaryReader reader = new BinaryReader(file.OpenReadStream());
+            var bytes = reader.ReadBytes(Convert.ToInt32(file.Length));
+
+            var result = await _mediator.Send(new AddDocumentCommand(new()
             {
-                await file.CopyToAsync(fileStream);
-            }
+                PostedDate = postedData,
+                Name = name,
+                Description = description,
+                Category = category
+            }, bytes));
 
-            return Ok();
+            return Ok(result);
         }
 
-
-
+        [AllowAnonymous]
         [HttpGet]
-        [Route("Download/{url}")]
-        public async Task<IActionResult> Download(string url)
+        [Route("{id}")]
+        public async Task<IActionResult> Get(int id)
         {
-            var bytes = await System.IO.File.ReadAllBytesAsync(url);
-            string contentType;
+            var result = await _mediator.Send(new GetDocumentQuery(id));
+            var stream = new MemoryStream(result.Content);
 
-            if (new FileExtensionContentTypeProvider().TryGetContentType(Path.GetFileName(url), out contentType))
-            {
-
-                var file = File(bytes, contentType, Path.GetFileName(url));
-                return file;
-            };
-
-            return File(bytes, "text/plain", Path.GetFileName(url));
+            return File(stream, "application/pdf", "test.pdf");
         }
     }
 }

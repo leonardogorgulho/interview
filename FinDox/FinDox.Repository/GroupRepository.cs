@@ -9,7 +9,7 @@ namespace FinDox.Repository
 {
     public class GroupRepository : IGroupRepository
     {
-        private AppConnectionFactory _appConnectionFactory;
+        private readonly AppConnectionFactory _appConnectionFactory;
 
         public GroupRepository(AppConnectionFactory appConnectionFactory)
         {
@@ -53,7 +53,7 @@ namespace FinDox.Repository
             using var connection = _appConnectionFactory.GetConnection();
 
             var result = await connection.ExecuteScalarAsync<bool>(
-                "core.remove_user_group",
+                "core.delete_user_group",
                 new
                 {
                     p_userid = userGroup.UserId,

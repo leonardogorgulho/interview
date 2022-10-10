@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using FinDox.Domain.Entities;
 using FinDox.Domain.Interfaces;
-using FinDox.Domain.Request;
 using FinDox.Domain.Response;
 using FinDox.Domain.Types;
 using System.Data;
@@ -9,23 +8,23 @@ using static Dapper.SqlMapper;
 
 namespace FinDox.Repository
 {
-    public class UserRepository : IUserRepository
+    public class DocumentRepository : IDocumentRepository
     {
         private readonly AppConnectionFactory _appConnectionFactory;
 
-        public UserRepository(AppConnectionFactory appConnectionFactory)
+        public DocumentRepository(AppConnectionFactory appConnectionFactory)
         {
             _appConnectionFactory = appConnectionFactory;
         }
 
-        public async Task<User?> Add(User entity)
+        public async Task<Document?> Add(Document entity)
         {
             using var connection = _appConnectionFactory.GetConnection();
 
-            var id = await connection.ExecuteScalarAsync<int>("core.add_user",
+            var id = await connection.ExecuteScalarAsync<int>("core.add_document",
             new
             {
-                p_user = _appConnectionFactory.CreateParameter<UserEntry>("core.user_entry", UserEntry.MapFrom(entity))
+                p_document = _appConnectionFactory.CreateParameter<DocumentEntry>("core.document_entry", DocumentEntry.MapFrom(entity))
             },
             commandType: CommandType.StoredProcedure);
 
@@ -34,25 +33,25 @@ namespace FinDox.Repository
             return entity;
         }
 
-        public async Task<User?> Get(int id)
+        public async Task<Document?> Get(int id)
         {
             using var connection = _appConnectionFactory.GetConnection();
 
-            var result = await connection.QueryFirstOrDefaultAsync<User>(
-                "core.get_user",
+            var result = await connection.QueryFirstOrDefaultAsync<Document>(
+                "core.get_document",
                 new { p_id = id },
                 commandType: CommandType.StoredProcedure);
 
             return result;
         }
 
-        public async Task<UserResponse> Login(LoginRequest request)
+        public async Task<DocumentResponse?> GetDocumentWithFile(int id)
         {
             using var connection = _appConnectionFactory.GetConnection();
 
-            var result = await connection.QueryFirstOrDefaultAsync<UserResponse>(
-                "core.login",
-                new { p_login = request.Login, p_password = request.Password },
+            var result = await connection.QueryFirstOrDefaultAsync<DocumentResponse>(
+                "core.get_document_with_file",
+                new { p_id = id },
                 commandType: CommandType.StoredProcedure);
 
             return result;
@@ -65,7 +64,7 @@ namespace FinDox.Repository
             try
             {
                 await connection.ExecuteAsync(
-                    "core.delete_user",
+                    "core.delete_document",
                     new { p_id = id },
                     commandType: CommandType.StoredProcedure);
 
@@ -77,18 +76,18 @@ namespace FinDox.Repository
             }
         }
 
-        public async Task<User?> Update(User entity)
+        public async Task<Document?> Update(Document entity)
         {
             using var connection = _appConnectionFactory.GetConnection();
 
             try
             {
                 await connection.ExecuteAsync(
-                    "core.update_user",
+                    "core.update_document",
                     new
                     {
                         p_id = entity.Id,
-                        p_user = _appConnectionFactory.CreateParameter<UserEntry>("core.user_entry", UserEntry.MapFrom(entity))
+                        p_document = _appConnectionFactory.CreateParameter<DocumentEntry>("core.document_entry", DocumentEntry.MapFrom(entity))
                     },
                     commandType: CommandType.StoredProcedure);
 

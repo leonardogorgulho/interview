@@ -2,6 +2,8 @@ using FinDox.Domain.Interfaces;
 using FinDox.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -14,6 +16,9 @@ builder.Services.AddMediatR(Assembly.GetExecutingAssembly(), Assembly.Load("FinD
 
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IGroupRepository, GroupRepository>();
+builder.Services.AddSingleton<IDocumentRepository, DocumentRepository>();
+builder.Services.AddSingleton<IFileRepository, FileRepository>();
+
 builder.Services.AddSingleton<AppConnectionFactory>();
 
 builder.Services.AddControllers();
@@ -45,6 +50,18 @@ builder.Services.AddSwaggerGen(c =>
             new string[] { }
         }
     });
+});
+
+builder.Services.Configure<FormOptions>(opt =>
+{
+    opt.ValueLengthLimit = int.MaxValue;
+    opt.MultipartBodyLengthLimit = int.MaxValue;
+    opt.MultipartHeadersLengthLimit = int.MaxValue;
+});
+
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = int.MaxValue;
 });
 
 builder.Services.AddAuthentication(options =>

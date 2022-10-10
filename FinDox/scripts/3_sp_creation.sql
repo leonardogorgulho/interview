@@ -211,4 +211,145 @@ $BODY$;
 
 ALTER FUNCTION core.get_users_from_group(integer)
     OWNER TO postgres;
+
+CREATE OR REPLACE FUNCTION core.add_document(
+	p_document core.document_entry)
+    RETURNS integer
+    LANGUAGE 'sql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+    INSERT INTO core.document(file_id, posted_date, name, description, category)
+    VALUES (p_document.file_id, p_document.posted_date, p_document.name, p_document.description, p_document.category);
+	SELECT LASTVAL();
+$BODY$;
+
+ALTER FUNCTION core.add_document(core.document_entry)
+    OWNER TO postgres;
+
+CREATE OR REPLACE FUNCTION core.delete_document(
+	p_id integer)
+    RETURNS void
+    LANGUAGE 'sql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+	DELETE FROM core.document WHERE id = p_id;
+$BODY$;
+
+ALTER FUNCTION core.delete_document(integer)
+    OWNER TO postgres;
+
+CREATE OR REPLACE FUNCTION core.get_document(
+	p_id integer)
+    RETURNS SETOF core."document" 
+    LANGUAGE 'sql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+    SELECT 
+		id, 
+		file_id,
+		posted_date,
+		name,
+		description,
+		category
+	FROM core.document 
+	WHERE id = p_id;
+$BODY$;
+
+ALTER FUNCTION core.get_document(integer)
+    OWNER TO postgres;
+
+CREATE OR REPLACE FUNCTION core.update_document(
+	p_id integer,
+	p_document core.document_entry)
+    RETURNS void
+    LANGUAGE 'sql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+    UPDATE core.document
+	SET file_id = p_document.file_id,
+		posted_date = p_document.posted_date,
+		name = p_document.name,
+		description = p_document.description,
+		category = p_document.category
+	WHERE id = p_id;
+$BODY$;
+
+ALTER FUNCTION core.update_document(integer, core.document_entry)
+    OWNER TO postgres;
+	
+	
+	
+	
+
+CREATE OR REPLACE FUNCTION core.add_file(
+	p_file bytea)
+    RETURNS integer
+    LANGUAGE 'sql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+    INSERT INTO core.file(content)
+    VALUES (p_file);
+	SELECT LASTVAL();
+$BODY$;
+
+ALTER FUNCTION core.add_file(bytea)
+    OWNER TO postgres;
+	
+
+CREATE OR REPLACE FUNCTION core.get_file(
+	p_id integer)
+    RETURNS SETOF core.file
+    LANGUAGE 'sql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+    SELECT * 
+	FROM core.file 
+	WHERE id = p_id;
+$BODY$;
+
+ALTER FUNCTION core.get_file(integer)
+    OWNER TO postgres;
+	
+	
+	
+CREATE OR REPLACE FUNCTION core.get_document_with_file(
+	p_id integer)
+    RETURNS TABLE (
+		id int,
+		file_id int,
+		posted_date date,
+		name character varying,
+		description character varying,
+		category character varying,
+		content bytea
+	) 
+    LANGUAGE 'sql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+    SELECT 
+		d.id, 
+		d.file_id,
+		d.posted_date,
+		d.name,
+		d.description,
+		d.category,
+		f.content
+	FROM core.document d
+	INNER JOIN core.file f on d.file_id = f.id
+	WHERE d.id = p_id;
+$BODY$;
+
+ALTER FUNCTION core.get_document_with_file(integer)
+    OWNER TO postgres;
 */

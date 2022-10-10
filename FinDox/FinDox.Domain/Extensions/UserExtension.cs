@@ -26,7 +26,5 @@ namespace FinDox.Domain.Extensions
                 Password = request.Password
             };
         }
-
-
     }
 }

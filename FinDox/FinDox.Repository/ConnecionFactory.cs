@@ -1,6 +1,7 @@
 ﻿using FinDox.Domain.Types;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
+using NpgsqlTypes;
 using static Dapper.SqlMapper;
 
 namespace FinDox.Repository
@@ -13,6 +14,7 @@ namespace FinDox.Repository
         {
             _configuration = configuration;
             NpgsqlConnection.GlobalTypeMapper.MapComposite<UserEntry>("core.user_entry");
+            NpgsqlConnection.GlobalTypeMapper.MapComposite<DocumentEntry>("core.document_entry");
         }
 
         public NpgsqlConnection GetConnection()
@@ -22,7 +24,12 @@ namespace FinDox.Repository
 
         public ICustomQueryParameter CreateParameter<T>(string npgTypeName, T entry)
         {
-            return new CompositeTypeParameter<T>(npgTypeName, entry);
+            return new CustomParameter<T>(npgTypeName, entry);
+        }
+
+        public ICustomQueryParameter CreateParameter<T>(NpgsqlDbType dbType, T entry)
+        {
+            return new CustomParameter<T>(dbType, entry);
         }
     }
 }
