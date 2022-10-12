@@ -5,10 +5,14 @@ namespace FinDox.Application.Queries
 {
     public class GetDocumentQuery : IRequest<DocumentResponse>
     {
-        public GetDocumentQuery(int id)
+        public GetDocumentQuery(int id, bool withFile)
         {
             Id = id;
+            WithFile = withFile;
         }
-        public int Id { get; set; }
+
+        public int Id { get; }
+
+        public bool WithFile { get; }
     }
 }

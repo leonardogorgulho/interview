@@ -1,4 +1,5 @@
-﻿using FinDox.Domain.Types;
+﻿using Dapper;
+using FinDox.Domain.Types;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using NpgsqlTypes;
@@ -15,6 +16,7 @@ namespace FinDox.Repository
             _configuration = configuration;
             NpgsqlConnection.GlobalTypeMapper.MapComposite<UserEntry>("core.user_entry");
             NpgsqlConnection.GlobalTypeMapper.MapComposite<DocumentEntry>("core.document_entry");
+            DefaultTypeMap.MatchNamesWithUnderscores = true;
         }
 
         public NpgsqlConnection GetConnection()

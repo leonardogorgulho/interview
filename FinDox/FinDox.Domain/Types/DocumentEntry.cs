@@ -6,13 +6,17 @@ namespace FinDox.Domain.Types
     {
         public int FileId { get; set; }
 
-        public DateTime? PostedDate { get; set; }
+        public DateTime PostedDate { get; set; }
 
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         public string? Description { get; set; }
 
         public string? Category { get; set; }
+
+        public string ContentType { get; set; }
+
+        public long? Size { get; set; }
 
         public static DocumentEntry MapFrom(Document entity)
         {
@@ -23,6 +27,8 @@ namespace FinDox.Domain.Types
                 Name = entity.Name,
                 Description = entity.Description,
                 Category = entity.Category,
+                ContentType = entity.ContentType,
+                Size = entity.Size
             };
         }
     }

@@ -1,4 +1,5 @@
-﻿using FinDox.Domain.Interfaces;
+﻿using FinDox.Domain.Extensions;
+using FinDox.Domain.Interfaces;
 using FinDox.Domain.Response;
 using MediatR;
 
@@ -15,7 +16,9 @@ namespace FinDox.Application.Queries
 
         public async Task<DocumentResponse?> Handle(GetDocumentQuery request, CancellationToken cancellationToken)
         {
-            return await _documentRepository.GetDocumentWithFile(request.Id);
+            return request.WithFile ?
+                await _documentRepository.GetDocumentWithFile(request.Id) :
+                (await _documentRepository.Get(request.Id))?.ToDocumentEntry();
         }
     }
 }

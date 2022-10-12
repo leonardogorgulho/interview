@@ -18,33 +18,42 @@ namespace FinDox.Api.Controllers
             _mediator = mediator;
         }
 
-        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Post(DateTime? postedData, string? name, string? description, string? category, IFormFile file)
+        public async Task<IActionResult> Post([FromHeader] string? description, IFormFile file)
         {
             BinaryReader reader = new BinaryReader(file.OpenReadStream());
             var bytes = reader.ReadBytes(Convert.ToInt32(file.Length));
 
             var result = await _mediator.Send(new AddDocumentCommand(new()
             {
-                PostedDate = postedData,
-                Name = name,
+                PostedDate = DateTime.Now,
+                Name = file.FileName,
                 Description = description,
-                Category = category
+                Category = file.ContentType?.Split('/')[0],
+                ContentType = file.ContentType,
+                Size = file.Length
             }, bytes));
 
             return Ok(result);
         }
 
-        [AllowAnonymous]
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var result = await _mediator.Send(new GetDocumentQuery(id));
+            var result = await _mediator.Send(new GetDocumentQuery(id, false));
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("{id}/Download")]
+        public async Task<IActionResult> GetDownload(int id)
+        {
+            var result = await _mediator.Send(new GetDocumentQuery(id, true));
             var stream = new MemoryStream(result.Content);
 
-            return File(stream, "application/pdf", "test.pdf");
+            return File(stream, result.ContentType, result.Name);
         }
     }
 }
