@@ -1,8 +1,8 @@
 ﻿
 using Dapper;
+using FinDox.Domain.DataTransfer;
 using FinDox.Domain.Entities;
 using FinDox.Domain.Interfaces;
-using FinDox.Domain.Response;
 using System.Data;
 
 namespace FinDox.Repository

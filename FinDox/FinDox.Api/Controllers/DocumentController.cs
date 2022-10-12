@@ -1,5 +1,6 @@
 ﻿using FinDox.Application.Commands;
 using FinDox.Application.Queries;
+using FinDox.Domain.DataTransfer;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,34 @@ namespace FinDox.Api.Controllers
                 ContentType = file.ContentType,
                 Size = file.Length
             }, bytes));
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("GrantPermission")]
+        public async Task<IActionResult> GrantPermission([FromBody] DocumentPermissionEntry entry)
+        {
+            var result = await _mediator.Send(new GrantDocumentPermission(entry));
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("RemovePermission")]
+        public async Task<IActionResult> RemovePermission([FromBody] DocumentPermissionEntry entry)
+        {
+            var result = await _mediator.Send(new RemoveDocumentPermission(entry));
+
+            if (!result)
+            {
+                return BadRequest();
+            }
 
             return Ok(result);
         }

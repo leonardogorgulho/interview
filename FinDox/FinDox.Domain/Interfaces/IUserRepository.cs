@@ -1,6 +1,5 @@
-﻿using FinDox.Domain.Entities;
-using FinDox.Domain.Request;
-using FinDox.Domain.Response;
+﻿using FinDox.Domain.DataTransfer;
+using FinDox.Domain.Entities;
 
 namespace FinDox.Domain.Interfaces
 {

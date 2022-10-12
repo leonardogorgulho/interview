@@ -1,8 +1,8 @@
 ﻿using FinDox.Domain.Entities;
 
-namespace FinDox.Domain.Response
+namespace FinDox.Domain.DataTransfer
 {
-    public class DocumentResponse : Document
+    public class DocumentFile : Document
     {
         public byte[] Content { get; set; }
     }

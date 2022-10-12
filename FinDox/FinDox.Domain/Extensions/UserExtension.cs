@@ -1,6 +1,5 @@
 ﻿using FinDox.Domain.DataTransfer;
 using FinDox.Domain.Entities;
-using FinDox.Domain.Response;
 
 namespace FinDox.Domain.Extensions
 {

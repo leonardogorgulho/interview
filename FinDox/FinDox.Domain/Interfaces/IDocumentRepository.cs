@@ -1,10 +1,14 @@
-﻿using FinDox.Domain.Entities;
-using FinDox.Domain.Response;
+﻿using FinDox.Domain.DataTransfer;
+using FinDox.Domain.Entities;
 
 namespace FinDox.Domain.Interfaces
 {
     public interface IDocumentRepository : ICRUDRepositoy<Document>
     {
-        Task<DocumentResponse?> GetDocumentWithFile(int id);
+        Task<DataTransfer.DocumentFile?> GetDocumentWithFile(int id);
+
+        Task<bool> GrantAccess(DocumentPermissionEntry documentPermission);
+
+        Task<bool> RemoveAccess(DocumentPermissionEntry documentPermission);
     }
 }

@@ -1,9 +1,9 @@
-﻿using FinDox.Domain.Response;
+﻿using FinDox.Domain.DataTransfer;
 using MediatR;
 
 namespace FinDox.Application.Queries
 {
-    public class GetDocumentQuery : IRequest<DocumentResponse>
+    public class GetDocumentQuery : IRequest<DocumentFile>
     {
         public GetDocumentQuery(int id, bool withFile)
         {

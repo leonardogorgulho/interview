@@ -1,7 +1,7 @@
 ﻿using FinDox.Application.Commands;
 using FinDox.Application.Queries;
+using FinDox.Domain.DataTransfer;
 using FinDox.Domain.Entities;
-using FinDox.Domain.Request;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;

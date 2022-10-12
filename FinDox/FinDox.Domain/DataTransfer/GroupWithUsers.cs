@@ -1,4 +1,4 @@
-﻿namespace FinDox.Domain.Response
+﻿namespace FinDox.Domain.DataTransfer
 {
     public class GroupWithUsers
     {

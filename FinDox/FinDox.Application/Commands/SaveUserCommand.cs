@@ -1,5 +1,4 @@
 ﻿using FinDox.Domain.DataTransfer;
-using FinDox.Domain.Response;
 using MediatR;
 
 namespace FinDox.Application.Commands

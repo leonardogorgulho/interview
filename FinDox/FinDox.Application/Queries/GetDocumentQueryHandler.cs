@@ -1,11 +1,11 @@
-﻿using FinDox.Domain.Extensions;
+﻿using FinDox.Domain.DataTransfer;
+using FinDox.Domain.Extensions;
 using FinDox.Domain.Interfaces;
-using FinDox.Domain.Response;
 using MediatR;
 
 namespace FinDox.Application.Queries
 {
-    public class GetDocumentQueryHandler : IRequestHandler<GetDocumentQuery, DocumentResponse?>
+    public class GetDocumentQueryHandler : IRequestHandler<GetDocumentQuery, DocumentFile?>
     {
         private readonly IDocumentRepository _documentRepository;
 
@@ -14,7 +14,7 @@ namespace FinDox.Application.Queries
             _documentRepository = documentRepository;
         }
 
-        public async Task<DocumentResponse?> Handle(GetDocumentQuery request, CancellationToken cancellationToken)
+        public async Task<DocumentFile?> Handle(GetDocumentQuery request, CancellationToken cancellationToken)
         {
             return request.WithFile ?
                 await _documentRepository.GetDocumentWithFile(request.Id) :

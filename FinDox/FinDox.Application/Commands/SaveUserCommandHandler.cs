@@ -1,6 +1,6 @@
-﻿using FinDox.Domain.Extensions;
+﻿using FinDox.Domain.DataTransfer;
+using FinDox.Domain.Extensions;
 using FinDox.Domain.Interfaces;
-using FinDox.Domain.Response;
 using MediatR;
 
 namespace FinDox.Application.Commands

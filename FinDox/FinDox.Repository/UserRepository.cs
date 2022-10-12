@@ -1,8 +1,7 @@
 ﻿using Dapper;
+using FinDox.Domain.DataTransfer;
 using FinDox.Domain.Entities;
 using FinDox.Domain.Interfaces;
-using FinDox.Domain.Request;
-using FinDox.Domain.Response;
 using FinDox.Domain.Types;
 using System.Data;
 using static Dapper.SqlMapper;

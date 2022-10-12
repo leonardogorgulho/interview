@@ -1,5 +1,5 @@
 ﻿using FinDox.Application.Queries;
-using FinDox.Domain.Request;
+using FinDox.Domain.DataTransfer;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

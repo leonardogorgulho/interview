@@ -1,12 +1,11 @@
-﻿using FinDox.Domain.Entities;
-using FinDox.Domain.Request;
-using FinDox.Domain.Response;
+﻿using FinDox.Domain.DataTransfer;
+using FinDox.Domain.Entities;
 
 namespace FinDox.Domain.Extensions
 {
     public static class DocumentExtension
     {
-        public static Document ToEntity(this DocumentEntryRequest request, int? id = null, int? fileId = null)
+        public static Document ToEntity(this DataTransfer.DocumentFile request, int? id = null, int? fileId = null)
         {
             return new Document
             {
@@ -21,9 +20,9 @@ namespace FinDox.Domain.Extensions
             };
         }
 
-        public static DocumentResponse ToDocumentEntry(this Document request)
+        public static DataTransfer.DocumentFile ToDocumentEntry(this Document request)
         {
-            return new DocumentResponse
+            return new DataTransfer.DocumentFile
             {
                 Id = request.Id,
                 Category = request.Category,

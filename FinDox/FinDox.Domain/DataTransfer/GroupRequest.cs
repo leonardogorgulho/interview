@@ -1,4 +1,4 @@
-﻿namespace FinDox.Domain.Request
+﻿namespace FinDox.Domain.DataTransfer
 {
     public class GroupRequest
     {

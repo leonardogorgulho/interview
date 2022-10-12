@@ -1,5 +1,5 @@
-﻿using FinDox.Domain.Entities;
-using FinDox.Domain.Request;
+﻿using FinDox.Domain.DataTransfer;
+using FinDox.Domain.Entities;
 using MediatR;
 
 namespace FinDox.Application.Commands

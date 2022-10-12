@@ -1,5 +1,5 @@
-﻿using FinDox.Domain.Interfaces;
-using FinDox.Domain.Response;
+﻿using FinDox.Domain.DataTransfer;
+using FinDox.Domain.Interfaces;
 using MediatR;
 
 namespace FinDox.Application.Queries
