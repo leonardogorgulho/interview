@@ -28,7 +28,7 @@ namespace FinDox.Repository
             },
             commandType: CommandType.StoredProcedure);
 
-            entity.Id = id;
+            entity.UserId = id;
 
             return entity;
         }
@@ -39,7 +39,7 @@ namespace FinDox.Repository
 
             var result = await connection.QueryFirstOrDefaultAsync<User>(
                 "core.get_user",
-                new { p_id = id },
+                new { p_user_id = id },
                 commandType: CommandType.StoredProcedure);
 
             return result;
@@ -65,7 +65,7 @@ namespace FinDox.Repository
             {
                 await connection.ExecuteAsync(
                     "core.delete_user",
-                    new { p_id = id },
+                    new { p_user_id = id },
                     commandType: CommandType.StoredProcedure);
 
                 return true;
@@ -86,7 +86,7 @@ namespace FinDox.Repository
                     "core.update_user",
                     new
                     {
-                        p_id = entity.Id,
+                        p_user_id = entity.UserId,
                         p_user = _appConnectionFactory.CreateParameter<UserEntry>("core.user_entry", UserEntry.MapFrom(entity))
                     },
                     commandType: CommandType.StoredProcedure);

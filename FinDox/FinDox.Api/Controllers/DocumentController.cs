@@ -38,11 +38,16 @@ namespace FinDox.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
-        [Route("GrantPermission")]
-        public async Task<IActionResult> GrantPermission([FromBody] DocumentPermissionEntry entry)
+        [HttpPut]
+        [Route("{id}/GrantPermission")]
+        public async Task<IActionResult> GrantPermission(int id, [FromBody] UsersAndGroupsIds entry)
         {
-            var result = await _mediator.Send(new GrantDocumentPermission(entry));
+            var result = await _mediator.Send(new GrantDocumentPermission(new()
+            {
+                DocumentId = id,
+                UserIds = entry.UserIds,
+                GroupIds = entry.GroupIds
+            }));
 
             if (!result)
             {
@@ -52,11 +57,16 @@ namespace FinDox.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
-        [Route("RemovePermission")]
-        public async Task<IActionResult> RemovePermission([FromBody] DocumentPermissionEntry entry)
+        [HttpDelete]
+        [Route("{id}/RemovePermission")]
+        public async Task<IActionResult> RemovePermission(int id, [FromBody] UsersAndGroupsIds entry)
         {
-            var result = await _mediator.Send(new RemoveDocumentPermission(entry));
+            var result = await _mediator.Send(new RemoveDocumentPermission(new()
+            {
+                DocumentId = id,
+                UserIds = entry.UserIds,
+                GroupIds = entry.GroupIds
+            }));
 
             if (!result)
             {
@@ -64,6 +74,14 @@ namespace FinDox.Api.Controllers
             }
 
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("{id}/Permissions")]
+        public async Task<IActionResult> GetPermissions(int id)
+        {
+            var docs = new DocumentPermissions();
+            return Ok(docs);
         }
 
         [HttpGet]

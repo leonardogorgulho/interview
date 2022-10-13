@@ -9,7 +9,7 @@ namespace FinDox.Domain.Extensions
         {
             return new UserResponse
             {
-                Id = user.Id,
+                UserId = user.UserId,
                 Login = user.Login,
                 Name = user.Name
             };
@@ -19,7 +19,7 @@ namespace FinDox.Domain.Extensions
         {
             return new User
             {
-                Id = id ?? 0,
+                UserId = id ?? 0,
                 Name = request.Name,
                 Login = request.Login,
                 Password = request.Password
