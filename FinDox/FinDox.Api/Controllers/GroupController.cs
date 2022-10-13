@@ -45,7 +45,7 @@ namespace FinDox.Api.Controllers
                 return BadRequest();
             }
 
-            return Created($"{Request.GetDisplayUrl()}/{group.Id}", group);
+            return Created($"{Request.GetDisplayUrl()}/{group.GroupId}", group);
         }
 
         [HttpPut]

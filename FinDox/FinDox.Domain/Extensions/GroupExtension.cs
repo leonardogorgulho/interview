@@ -9,7 +9,7 @@ namespace FinDox.Domain.Extensions
         {
             return new Group
             {
-                Id = id ?? 0,
+                GroupId = id ?? 0,
                 Name = request.Name
             };
         }

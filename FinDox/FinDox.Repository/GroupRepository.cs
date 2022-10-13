@@ -27,7 +27,7 @@ namespace FinDox.Repository
             },
             commandType: CommandType.StoredProcedure);
 
-            entity.Id = id;
+            entity.GroupId = id;
 
             return entity;
         }
@@ -40,8 +40,8 @@ namespace FinDox.Repository
                 "core.add_user_group",
                 new
                 {
-                    p_userid = userGroup.UserId,
-                    p_groupid = userGroup.GroupId
+                    p_user_id = userGroup.UserId,
+                    p_group_id = userGroup.GroupId
                 },
                 commandType: CommandType.StoredProcedure);
 
@@ -56,8 +56,8 @@ namespace FinDox.Repository
                 "core.delete_user_group",
                 new
                 {
-                    p_userid = userGroup.UserId,
-                    p_groupid = userGroup.GroupId
+                    p_user_id = userGroup.UserId,
+                    p_group_id = userGroup.GroupId
                 },
                 commandType: CommandType.StoredProcedure);
 
@@ -70,7 +70,7 @@ namespace FinDox.Repository
 
             var result = await connection.QueryFirstOrDefaultAsync<Group>(
                 "core.get_group",
-                new { p_id = id },
+                new { p_group_id = id },
                 commandType: CommandType.StoredProcedure);
 
             return result;
@@ -84,7 +84,7 @@ namespace FinDox.Repository
             {
                 await connection.ExecuteAsync(
                     "core.delete_group",
-                    new { p_id = id },
+                    new { p_group_id = id },
                     commandType: CommandType.StoredProcedure);
 
                 return true;
@@ -105,7 +105,7 @@ namespace FinDox.Repository
                     "core.update_group",
                     new
                     {
-                        p_id = entity.Id,
+                        p_group_id = entity.GroupId,
                         p_name = entity.Name
                     },
                     commandType: CommandType.StoredProcedure);
@@ -124,7 +124,7 @@ namespace FinDox.Repository
 
             var group = await connection.QueryFirstOrDefaultAsync<Group>(
                 "core.get_group",
-                new { p_id = groupId },
+                new { p_group_id = groupId },
                 commandType: CommandType.StoredProcedure);
 
             if (group != null)
@@ -137,7 +137,7 @@ namespace FinDox.Repository
 
                 return new GroupWithUsers()
                 {
-                    Id = group.Id,
+                    GroupId = group.GroupId,
                     Name = group.Name,
                     Users = users?.ToList(),
                 };
