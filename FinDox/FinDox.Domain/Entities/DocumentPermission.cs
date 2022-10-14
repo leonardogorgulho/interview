@@ -2,7 +2,7 @@
 {
     public class DocumentPermission
     {
-        public int Id { get; set; }
+        public int DocumentPermissionId { get; set; }
 
         public int DocumentId { get; set; }
 

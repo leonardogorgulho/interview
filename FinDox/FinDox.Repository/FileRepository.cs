@@ -36,7 +36,7 @@ namespace FinDox.Repository
 
             var result = await connection.QueryFirstOrDefaultAsync<DocumentFile>(
                 "core.get_file",
-                new { p_id = id },
+                new { p_file_id = id },
                 commandType: CommandType.StoredProcedure);
 
             return result;

@@ -2,7 +2,7 @@
 {
     public class DocumentFile
     {
-        public int Id { get; set; }
+        public int FileId { get; set; }
 
         public byte[] Content { get; set; }
     }

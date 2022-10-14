@@ -9,7 +9,7 @@ namespace FinDox.Domain.Extensions
         {
             return new Document
             {
-                Id = id ?? 0,
+                DocumentId = id ?? 0,
                 Name = request.Name,
                 Description = request.Description,
                 PostedDate = request.PostedDate,
@@ -24,7 +24,7 @@ namespace FinDox.Domain.Extensions
         {
             return new DataTransfer.DocumentFile
             {
-                Id = request.Id,
+                DocumentId = request.DocumentId,
                 Category = request.Category,
                 ContentType = request.ContentType,
                 Description = request.Description,

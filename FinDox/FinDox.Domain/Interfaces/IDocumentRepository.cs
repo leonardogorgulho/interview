@@ -10,5 +10,11 @@ namespace FinDox.Domain.Interfaces
         Task<bool> GrantAccess(DocumentPermissionEntry documentPermission);
 
         Task<bool> RemoveAccess(DocumentPermissionEntry documentPermission);
+
+        Task<DocumentPermissionResponse> GetDocumentPermission(int documentId);
+
+        Task<GroupPermissionResponse> GetDocumentsByGroup(int groupId);
+
+        Task<UserPermissionResponse> GetDocumentsByUser(int userId);
     }
 }

@@ -80,7 +80,8 @@ namespace FinDox.Api.Controllers
         [Route("{id}/Permissions")]
         public async Task<IActionResult> GetPermissions(int id)
         {
-            var docs = new DocumentPermissions();
+            var docs = await _mediator.Send(new GetDocumentPermissionQuery(id));
+
             return Ok(docs);
         }
 
@@ -101,6 +102,20 @@ namespace FinDox.Api.Controllers
             var stream = new MemoryStream(result.Content);
 
             return File(stream, result.ContentType, result.Name);
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _mediator.Send(new RemoveDocumentCommand(id));
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
         }
     }
 }

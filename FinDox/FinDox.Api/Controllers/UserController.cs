@@ -33,6 +33,20 @@ namespace FinDox.Api.Controllers
             return Ok(user);
         }
 
+        [HttpGet]
+        [Route("{id}/documents")]
+        public async Task<IActionResult> GetDocuments(int id)
+        {
+            var permissions = await _mediator.Send(new GetUserDocumentsQuery(id));
+
+            if (permissions == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(permissions);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] UserEntryRequest userRequest)
         {
