@@ -11,7 +11,8 @@ namespace FinDox.Domain.Extensions
             {
                 UserId = user.UserId,
                 Login = user.Login,
-                Name = user.Name
+                Name = user.Name,
+                Role = user.Role
             };
         }
 
@@ -22,7 +23,8 @@ namespace FinDox.Domain.Extensions
                 UserId = id ?? 0,
                 Name = request.Name,
                 Login = request.Login,
-                Password = request.Password
+                Password = request.Password,
+                Role = request.Role
             };
         }
     }

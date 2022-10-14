@@ -10,13 +10,16 @@ namespace FinDox.Domain.Types
 
         public string Password { get; set; }
 
+        public string Role { get; set; }
+
         public static UserEntry MapFrom(User entity)
         {
             return new UserEntry
             {
                 Name = entity.Name,
                 Login = entity.Login,
-                Password = entity.Password
+                Password = entity.Password,
+                Role = entity.Role
             };
         }
     }
