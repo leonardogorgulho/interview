@@ -1,4 +1,5 @@
 ﻿using FinDox.Application.Commands;
+using FinDox.Application.Constants;
 using FinDox.Application.Queries;
 using FinDox.Domain.DataTransfer;
 using MediatR;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FinDox.Api.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = Roles.Admin)]
     [Route("[controller]")]
     public class UserController : Controller
     {
@@ -86,6 +87,20 @@ namespace FinDox.Api.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("users")]
+        public async Task<IActionResult> GetUsers(string name, string login, int skip = 0, int take = 20)
+        {
+            var users = await _mediator.Send(new GetUsersQuery(name, login, skip, take));
+
+            if (users == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(users);
         }
     }
 }

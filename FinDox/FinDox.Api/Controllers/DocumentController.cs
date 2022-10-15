@@ -1,4 +1,5 @@
 ﻿using FinDox.Application.Commands;
+using FinDox.Application.Constants;
 using FinDox.Application.Queries;
 using FinDox.Domain.DataTransfer;
 using MediatR;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FinDox.Api.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = Roles.All)]
     [Route("[controller]")]
     public class DocumentController : FinDoxDocumentSecurityController
     {
@@ -20,6 +21,7 @@ namespace FinDox.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.AdminAndManager)]
         public async Task<IActionResult> Post([FromHeader] string? description, IFormFile file)
         {
             BinaryReader reader = new BinaryReader(file.OpenReadStream());
@@ -40,6 +42,7 @@ namespace FinDox.Api.Controllers
 
         [HttpPut]
         [Route("{id}/GrantPermission")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> GrantPermission(int id, [FromBody] UsersAndGroupsIds entry)
         {
             var result = await _mediator.Send(new GrantDocumentPermission(new()
@@ -59,6 +62,7 @@ namespace FinDox.Api.Controllers
 
         [HttpDelete]
         [Route("{id}/RemovePermission")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> RemovePermission(int id, [FromBody] UsersAndGroupsIds entry)
         {
             var result = await _mediator.Send(new RemoveDocumentPermission(new()
@@ -78,6 +82,7 @@ namespace FinDox.Api.Controllers
 
         [HttpGet]
         [Route("{id}/Permissions")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> GetPermissions(int id)
         {
             var docs = await _mediator.Send(new GetDocumentPermissionQuery(id));
@@ -91,7 +96,7 @@ namespace FinDox.Api.Controllers
         {
             if (!await CanLoggedUserDownload(id))
             {
-                return Unauthorized("Current logged user does not have access to this document.");
+                return Unauthorized("Logged user does not have access to this document.");
             }
 
             var result = await _mediator.Send(new GetDocumentQuery(id, false));
@@ -103,6 +108,11 @@ namespace FinDox.Api.Controllers
         [Route("{id}/Download")]
         public async Task<IActionResult> GetDownload(int id)
         {
+            if (!await CanLoggedUserDownload(id))
+            {
+                return Unauthorized("Logged user does not have access to this document.");
+            }
+
             var result = await _mediator.Send(new GetDocumentQuery(id, true));
             var stream = new MemoryStream(result.Content);
 
@@ -111,6 +121,7 @@ namespace FinDox.Api.Controllers
 
         [HttpDelete]
         [Route("{id}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _mediator.Send(new RemoveDocumentCommand(id));

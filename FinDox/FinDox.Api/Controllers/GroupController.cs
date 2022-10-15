@@ -1,4 +1,5 @@
 ﻿using FinDox.Application.Commands;
+using FinDox.Application.Constants;
 using FinDox.Application.Queries;
 using FinDox.Domain.DataTransfer;
 using FinDox.Domain.Entities;
@@ -10,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FinDox.Api.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = Roles.Admin)]
     [Route("[controller]")]
     public class GroupController : Controller
     {

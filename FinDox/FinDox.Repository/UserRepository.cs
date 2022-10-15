@@ -45,6 +45,24 @@ namespace FinDox.Repository
             return result;
         }
 
+        public async Task<List<UserResponse>> GetUsers(string name, string login, int skip, int take)
+        {
+            using var connection = _appConnectionFactory.GetConnection();
+
+            var result = await connection.QueryAsync<UserResponse>(
+                "core.get_users",
+                new
+                {
+                    p_name = name,
+                    p_login = login,
+                    p_offset = skip,
+                    p_limit = take
+                },
+                commandType: CommandType.StoredProcedure);
+
+            return result.ToList();
+        }
+
         public async Task<UserResponse> Login(LoginRequest request)
         {
             using var connection = _appConnectionFactory.GetConnection();
