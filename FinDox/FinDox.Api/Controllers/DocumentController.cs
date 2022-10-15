@@ -22,7 +22,7 @@ namespace FinDox.Api.Controllers
 
         [HttpPost]
         [Authorize(Roles = Roles.AdminAndManager)]
-        public async Task<IActionResult> Post([FromHeader] string? description, IFormFile file)
+        public async Task<IActionResult> Post([FromHeader] string description, IFormFile file)
         {
             BinaryReader reader = new BinaryReader(file.OpenReadStream());
             var bytes = reader.ReadBytes(Convert.ToInt32(file.Length));
