@@ -10,11 +10,11 @@ namespace FinDox.Api.Controllers
     [ApiController]
     [Authorize]
     [Route("[controller]")]
-    public class DocumentController : ControllerBase
+    public class DocumentController : FinDoxDocumentSecurityController
     {
         IMediator _mediator;
 
-        public DocumentController(IMediator mediator)
+        public DocumentController(IMediator mediator) : base(mediator)
         {
             _mediator = mediator;
         }
@@ -89,6 +89,11 @@ namespace FinDox.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Get(int id)
         {
+            if (!await CanLoggedUserDownload(id))
+            {
+                return Unauthorized("Current logged user does not have access to this document.");
+            }
+
             var result = await _mediator.Send(new GetDocumentQuery(id, false));
 
             return Ok(result);

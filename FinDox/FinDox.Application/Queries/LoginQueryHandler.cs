@@ -34,11 +34,11 @@ namespace FinDox.Application.Queries
             return new LoginResponse
             {
                 User = user,
-                Token = CreateToken()
+                Token = CreateToken(user)
             };
         }
 
-        private string CreateToken()
+        private string CreateToken(UserResponse user)
         {
             var issuer = _configuration.GetValue<string>("Jwt:Issuer");
             var audience = _configuration.GetValue<string>("Jwt:Audience");
@@ -47,10 +47,11 @@ namespace FinDox.Application.Queries
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                new Claim("Id", Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti,
-                Guid.NewGuid().ToString())
-             }),
+                    new Claim("Id", Guid.NewGuid().ToString()),
+                    new Claim("UserId", user.UserId.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                }),
                 Expires = DateTime.UtcNow.AddHours(5),
                 Issuer = issuer,
                 Audience = audience,

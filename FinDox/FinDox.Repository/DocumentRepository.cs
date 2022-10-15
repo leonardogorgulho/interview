@@ -33,6 +33,18 @@ namespace FinDox.Repository
             return entity;
         }
 
+        public async Task<bool> CanUserDownloadDocument(int userId, int documentId)
+        {
+            using var connection = _appConnectionFactory.GetConnection();
+
+            var result = await connection.ExecuteScalarAsync<bool>(
+                "core.can_user_download_document",
+                new { p_user_id = userId, p_document_id = documentId },
+                commandType: CommandType.StoredProcedure);
+
+            return result;
+        }
+
         public async Task<Document?> Get(int id)
         {
             using var connection = _appConnectionFactory.GetConnection();

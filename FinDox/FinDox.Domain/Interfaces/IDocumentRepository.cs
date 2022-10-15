@@ -16,5 +16,7 @@ namespace FinDox.Domain.Interfaces
         Task<GroupPermissionResponse> GetDocumentsByGroup(int groupId);
 
         Task<UserPermissionResponse> GetDocumentsByUser(int userId);
+
+        Task<bool> CanUserDownloadDocument(int userId, int documentId);
     }
 }
