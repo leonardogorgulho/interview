@@ -131,7 +131,7 @@ namespace FinDox.Repository
             {
                 var users = await connection.QueryAsync<UserResponse>(
                     "core.get_users_from_group",
-                    new { p_groupid = groupId },
+                    new { p_group_id = groupId },
                     commandType: CommandType.StoredProcedure);
 
 
