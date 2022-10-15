@@ -2,7 +2,7 @@
 
 namespace FinDox.Domain.DataTransfer
 {
-    public class DocumentFile : Document
+    public class DocumentWithFile : Document
     {
         public byte[] Content { get; set; }
     }

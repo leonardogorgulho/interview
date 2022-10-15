@@ -18,6 +18,11 @@ namespace FinDox.Application.Commands
 
         public async Task<Document> Handle(AddDocumentCommand request, CancellationToken cancellationToken)
         {
+            if (request.FileContent == null)
+            {
+                throw new ArgumentNullException(nameof(request.FileContent));
+            }
+
             var fileid = await _fileRepository.AddFile(request.FileContent);
             var document = await _documentRepository.Add(request.Document.ToEntity(fileId: fileid));
 

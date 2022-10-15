@@ -5,7 +5,7 @@ namespace FinDox.Domain.Extensions
 {
     public static class DocumentExtension
     {
-        public static Document ToEntity(this DataTransfer.DocumentFile request, int? id = null, int? fileId = null)
+        public static Document ToEntity(this DocumentWithFile request, int? id = null, int? fileId = null)
         {
             return new Document
             {
@@ -20,9 +20,9 @@ namespace FinDox.Domain.Extensions
             };
         }
 
-        public static DataTransfer.DocumentFile ToDocumentEntry(this Document request)
+        public static DocumentWithFile ToDocumentEntry(this Document request)
         {
-            return new DataTransfer.DocumentFile
+            return new DocumentWithFile
             {
                 DocumentId = request.DocumentId,
                 Category = request.Category,

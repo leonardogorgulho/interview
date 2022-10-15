@@ -5,7 +5,7 @@ using MediatR;
 
 namespace FinDox.Application.Queries
 {
-    public class GetDocumentQueryHandler : IRequestHandler<GetDocumentQuery, DocumentFile?>
+    public class GetDocumentQueryHandler : IRequestHandler<GetDocumentQuery, DocumentWithFile?>
     {
         private readonly IDocumentRepository _documentRepository;
 
@@ -14,7 +14,7 @@ namespace FinDox.Application.Queries
             _documentRepository = documentRepository;
         }
 
-        public async Task<DocumentFile?> Handle(GetDocumentQuery request, CancellationToken cancellationToken)
+        public async Task<DocumentWithFile?> Handle(GetDocumentQuery request, CancellationToken cancellationToken)
         {
             return request.WithFile ?
                 await _documentRepository.GetDocumentWithFile(request.Id) :

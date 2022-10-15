@@ -137,11 +137,11 @@ namespace FinDox.Repository
             return userPermission;
         }
 
-        public async Task<Domain.DataTransfer.DocumentFile?> GetDocumentWithFile(int id)
+        public async Task<Domain.DataTransfer.DocumentWithFile?> GetDocumentWithFile(int id)
         {
             using var connection = _appConnectionFactory.GetConnection();
 
-            var result = await connection.QueryFirstOrDefaultAsync<Domain.DataTransfer.DocumentFile>(
+            var result = await connection.QueryFirstOrDefaultAsync<Domain.DataTransfer.DocumentWithFile>(
                 "core.get_document_with_file",
                 new { p_document_id = id },
                 commandType: CommandType.StoredProcedure);

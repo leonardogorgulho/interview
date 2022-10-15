@@ -3,7 +3,7 @@ using MediatR;
 
 namespace FinDox.Application.Queries
 {
-    public class GetDocumentQuery : IRequest<DocumentFile>
+    public class GetDocumentQuery : IRequest<DocumentWithFile>
     {
         public GetDocumentQuery(int id, bool withFile)
         {
