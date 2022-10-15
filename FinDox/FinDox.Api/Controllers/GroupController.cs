@@ -132,5 +132,19 @@ namespace FinDox.Api.Controllers
 
             return Ok(groupWithUsers);
         }
+
+        [HttpGet]
+        [Route("list")]
+        public async Task<IActionResult> GetGroups(string name, int skip = 0, int take = 20)
+        {
+            var groups = await _mediator.Send(new GetGroupsQuery(name, skip, take));
+
+            if (groups == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(groups);
+        }
     }
 }

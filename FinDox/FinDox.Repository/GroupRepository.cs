@@ -145,5 +145,22 @@ namespace FinDox.Repository
 
             return null;
         }
+
+        public async Task<List<Group>> GetGroups(string name, int skip, int take)
+        {
+            using var connection = _appConnectionFactory.GetConnection();
+
+            var result = await connection.QueryAsync<Group>(
+                "core.get_groups",
+                new
+                {
+                    p_name = name,
+                    p_offset = skip,
+                    p_limit = take
+                },
+                commandType: CommandType.StoredProcedure);
+
+            return result.ToList();
+        }
     }
 }

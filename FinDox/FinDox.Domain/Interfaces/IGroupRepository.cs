@@ -11,5 +11,7 @@ namespace FinDox.Domain.Interfaces
         Task<bool> RemoveUser(UserGroup userGroup);
 
         Task<GroupWithUsers> GetGroupWithUsers(int groupId);
+
+        Task<List<Group>> GetGroups(string name, int skip, int take);
     }
 }

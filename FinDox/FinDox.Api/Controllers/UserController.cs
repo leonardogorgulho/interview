@@ -90,7 +90,7 @@ namespace FinDox.Api.Controllers
         }
 
         [HttpGet]
-        [Route("users")]
+        [Route("list")]
         public async Task<IActionResult> GetUsers(string name, string login, int skip = 0, int take = 20)
         {
             var users = await _mediator.Send(new GetUsersQuery(name, login, skip, take));
