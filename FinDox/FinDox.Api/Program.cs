@@ -1,5 +1,8 @@
+using FinDox.Application.Validators;
+using FinDox.Domain.DataTransfer;
 using FinDox.Domain.Interfaces;
 using FinDox.Repository;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
@@ -13,6 +16,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly(), Assembly.Load("FinDox.Application"));
+
+builder.Services.AddSingleton<IValidator<LoginRequest>, LoginValidator>();
+builder.Services.AddSingleton<IValidator<UserEntryRequest>, UserEntryRequestValidator>();
 
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IGroupRepository, GroupRepository>();

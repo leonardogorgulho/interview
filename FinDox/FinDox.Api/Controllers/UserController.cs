@@ -2,6 +2,7 @@
 using FinDox.Application.Constants;
 using FinDox.Application.Queries;
 using FinDox.Domain.DataTransfer;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,13 @@ namespace FinDox.Api.Controllers
     [Route("[controller]")]
     public class UserController : Controller
     {
-        IMediator _mediator;
+        private readonly IMediator _mediator;
+        private readonly IValidator<UserEntryRequest> _entryRequestValidator;
 
-        public UserController(IMediator mediator)
+        public UserController(IMediator mediator, IValidator<UserEntryRequest> entryRequestValidator)
         {
             _mediator = mediator;
+            _entryRequestValidator = entryRequestValidator;
         }
 
         [HttpGet]
@@ -51,6 +54,12 @@ namespace FinDox.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] UserEntryRequest userRequest)
         {
+            var validation = await _entryRequestValidator.ValidateAsync(userRequest);
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors);
+            }
+
             var user = await _mediator.Send(new SaveUserCommand(userRequest));
 
             if (user == null)
@@ -65,6 +74,12 @@ namespace FinDox.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] UserEntryRequest userRequest)
         {
+            var validation = await _entryRequestValidator.ValidateAsync(userRequest);
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors);
+            }
+
             var user = await _mediator.Send(new SaveUserCommand(userRequest, id));
 
             if (user == null)
