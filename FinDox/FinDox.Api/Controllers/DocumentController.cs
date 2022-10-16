@@ -4,6 +4,7 @@ using FinDox.Application.Queries;
 using FinDox.Domain.DataTransfer;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinDox.Api.Controllers
@@ -37,7 +38,7 @@ namespace FinDox.Api.Controllers
                 Size = file.Length
             }, bytes));
 
-            return Ok(result);
+            return Created($"{Request.GetDisplayUrl()}/{result.DocumentId}", result);
         }
 
         [HttpPut]

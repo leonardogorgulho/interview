@@ -67,14 +67,19 @@ namespace FinDox.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] GroupRequest groupRequest)
         {
-            var group = await _mediator.Send(new SaveGroupCommand(groupRequest, id));
+            var result = await _mediator.Send(new SaveGroupCommand(groupRequest, id));
 
-            if (group == null)
+            if (!result.IsValid)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            if (result.Data == null)
             {
                 return NotFound();
             }
 
-            return Ok(group);
+            return Ok(result.Data);
         }
 
         [HttpDelete]

@@ -5,7 +5,7 @@ namespace FinDox.Application.Commands
 {
     public class RemoveUserCommandHandler : IRequestHandler<RemoveUserCommand, bool>
     {
-        IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
 
         public RemoveUserCommandHandler(IUserRepository userRepository)
         {

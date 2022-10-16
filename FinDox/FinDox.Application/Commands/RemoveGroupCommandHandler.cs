@@ -5,7 +5,7 @@ namespace FinDox.Application.Commands
 {
     public class RemoveGroupCommandHandler : IRequestHandler<RemoveGroupCommand, bool>
     {
-        IGroupRepository _groupRepository;
+        private readonly IGroupRepository _groupRepository;
 
         public RemoveGroupCommandHandler(IGroupRepository groupRepository)
         {

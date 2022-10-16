@@ -8,7 +8,7 @@ namespace FinDox.Application.Commands
 {
     public class SaveUserCommandHandler : IRequestHandler<SaveUserCommand, CommandResult<UserResponse>>
     {
-        IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
 
         public SaveUserCommandHandler(IUserRepository userRepository)
         {

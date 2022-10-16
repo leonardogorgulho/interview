@@ -5,7 +5,7 @@ namespace FinDox.Application.Commands
 {
     public class AddUserToGroupCommandHandler : IRequestHandler<AddUserToGroupCommand, bool>
     {
-        IGroupRepository _groupRepository;
+        private readonly IGroupRepository _groupRepository;
 
         public AddUserToGroupCommandHandler(IGroupRepository groupRepository)
         {

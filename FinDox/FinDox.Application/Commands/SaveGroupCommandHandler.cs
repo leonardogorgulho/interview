@@ -9,7 +9,7 @@ namespace FinDox.Application.Commands
 {
     public class SaveGroupCommandHandler : IRequestHandler<SaveGroupCommand, CommandResult<Group>>
     {
-        IGroupRepository _groupRepository;
+        private readonly IGroupRepository _groupRepository;
 
         public SaveGroupCommandHandler(IGroupRepository groupRepository)
         {

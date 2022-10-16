@@ -108,7 +108,7 @@ namespace FinDox.Repository
             try
             {
                 using var connection = _appConnectionFactory.GetConnection();
-                await connection.ExecuteAsync(
+                var affected = await connection.ExecuteScalarAsync<int>(
                     "core.update_user",
                     new
                     {
@@ -117,7 +117,7 @@ namespace FinDox.Repository
                     },
                     commandType: CommandType.StoredProcedure);
 
-                return entity;
+                return affected > 0 ? entity : null;
             }
             catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UniqueViolation)
             {

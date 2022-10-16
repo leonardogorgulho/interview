@@ -17,7 +17,7 @@ namespace FinDox.Repository
             _appConnectionFactory = appConnectionFactory;
         }
 
-        public async Task<Document?> Add(Document entity)
+        public async Task<Document> Add(Document entity)
         {
             using var connection = _appConnectionFactory.GetConnection();
 
@@ -45,7 +45,7 @@ namespace FinDox.Repository
             return result;
         }
 
-        public async Task<Document?> Get(int id)
+        public async Task<Document> Get(int id)
         {
             using var connection = _appConnectionFactory.GetConnection();
 
@@ -137,7 +137,7 @@ namespace FinDox.Repository
             return userPermission;
         }
 
-        public async Task<Domain.DataTransfer.DocumentWithFile?> GetDocumentWithFile(int id)
+        public async Task<DocumentWithFile> GetDocumentWithFile(int id)
         {
             using var connection = _appConnectionFactory.GetConnection();
 
@@ -215,27 +215,19 @@ namespace FinDox.Repository
             }
         }
 
-        public async Task<Document?> Update(Document entity)
+        public async Task<Document> Update(Document entity)
         {
             using var connection = _appConnectionFactory.GetConnection();
+            var affected = await connection.ExecuteScalarAsync<int>(
+                "core.update_document",
+                new
+                {
+                    p_document_id = entity.DocumentId,
+                    p_document = _appConnectionFactory.CreateParameter<DocumentEntry>("core.document_entry", DocumentEntry.MapFrom(entity))
+                },
+                commandType: CommandType.StoredProcedure);
 
-            try
-            {
-                await connection.ExecuteAsync(
-                    "core.update_document",
-                    new
-                    {
-                        p_document_id = entity.DocumentId,
-                        p_document = _appConnectionFactory.CreateParameter<DocumentEntry>("core.document_entry", DocumentEntry.MapFrom(entity))
-                    },
-                    commandType: CommandType.StoredProcedure);
-
-                return entity;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+            return affected > 0 ? entity : null;
         }
     }
 }

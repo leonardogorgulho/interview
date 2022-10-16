@@ -5,6 +5,7 @@ using FinDox.Domain.DataTransfer;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinDox.Api.Controllers
@@ -67,7 +68,7 @@ namespace FinDox.Api.Controllers
                 return BadRequest(result.Errors);
             }
 
-            return Ok(result.Data);
+            return Created($"{Request.GetDisplayUrl()}/{result.Data.UserId}", result.Data);
         }
 
         [HttpPut]
@@ -85,6 +86,11 @@ namespace FinDox.Api.Controllers
             if (!result.IsValid)
             {
                 return BadRequest(result.Errors);
+            }
+
+            if (result.Data == null)
+            {
+                return NotFound();
             }
 
             return Ok(result.Data);

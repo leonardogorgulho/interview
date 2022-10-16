@@ -2,7 +2,9 @@
 using Dapper;
 using FinDox.Domain.DataTransfer;
 using FinDox.Domain.Entities;
+using FinDox.Domain.Exceptions;
 using FinDox.Domain.Interfaces;
+using Npgsql;
 using System.Data;
 
 namespace FinDox.Repository
@@ -16,26 +18,31 @@ namespace FinDox.Repository
             _appConnectionFactory = appConnectionFactory;
         }
 
-        public async Task<Group?> Add(Group entity)
+        public async Task<Group> Add(Group entity)
         {
-            using var connection = _appConnectionFactory.GetConnection();
-
-            var id = await connection.ExecuteScalarAsync<int>("core.add_group",
-            new
+            try
             {
-                p_name = entity.Name
-            },
-            commandType: CommandType.StoredProcedure);
+                using var connection = _appConnectionFactory.GetConnection();
+                var id = await connection.ExecuteScalarAsync<int>("core.add_group",
+                new
+                {
+                    p_name = entity.Name
+                },
+                commandType: CommandType.StoredProcedure);
 
-            entity.GroupId = id;
-
-            return entity;
+                entity.GroupId = id;
+                return entity;
+            }
+            catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UniqueViolation)
+            {
+                //log
+                throw new ExistingGroupException(entity.Name);
+            }
         }
 
         public async Task<bool> AddUser(UserGroup userGroup)
         {
             using var connection = _appConnectionFactory.GetConnection();
-
             var result = await connection.ExecuteScalarAsync<bool>(
                 "core.add_user_group",
                 new
@@ -95,13 +102,12 @@ namespace FinDox.Repository
             }
         }
 
-        public async Task<Group?> Update(Group entity)
+        public async Task<Group> Update(Group entity)
         {
-            using var connection = _appConnectionFactory.GetConnection();
-
             try
             {
-                await connection.ExecuteAsync(
+                using var connection = _appConnectionFactory.GetConnection();
+                var affected = await connection.ExecuteScalarAsync<int>(
                     "core.update_group",
                     new
                     {
@@ -110,11 +116,12 @@ namespace FinDox.Repository
                     },
                     commandType: CommandType.StoredProcedure);
 
-                return entity;
+                return affected > 0 ? entity : null;
             }
-            catch (Exception ex)
+            catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UniqueViolation)
             {
-                return null;
+                //log
+                throw new ExistingGroupException(entity.Name);
             }
         }
 

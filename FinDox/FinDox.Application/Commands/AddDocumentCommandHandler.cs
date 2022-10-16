@@ -7,8 +7,8 @@ namespace FinDox.Application.Commands
 {
     public class AddDocumentCommandHandler : IRequestHandler<AddDocumentCommand, Document>
     {
-        IDocumentRepository _documentRepository;
-        IFileRepository _fileRepository;
+        private readonly IDocumentRepository _documentRepository;
+        private readonly IFileRepository _fileRepository;
 
         public AddDocumentCommandHandler(IDocumentRepository documentRepository, IFileRepository fileRepository)
         {
