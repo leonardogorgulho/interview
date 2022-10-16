@@ -3,6 +3,7 @@ using FinDox.Application.Constants;
 using FinDox.Application.Queries;
 using FinDox.Domain.DataTransfer;
 using FinDox.Domain.Entities;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -15,11 +16,13 @@ namespace FinDox.Api.Controllers
     [Route("[controller]")]
     public class GroupController : Controller
     {
-        IMediator _mediator;
+        private readonly IMediator _mediator;
+        private readonly IValidator<GroupRequest> _groupRequestValidator;
 
-        public GroupController(IMediator mediator)
+        public GroupController(IMediator mediator, IValidator<GroupRequest> groupRequestValidator)
         {
             _mediator = mediator;
+            _groupRequestValidator = groupRequestValidator;
         }
 
         [HttpGet]
@@ -53,8 +56,13 @@ namespace FinDox.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] GroupRequest groupRequest)
         {
-            var result = await _mediator.Send(new SaveGroupCommand(groupRequest));
+            var validation = await _groupRequestValidator.ValidateAsync(groupRequest);
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors);
+            }
 
+            var result = await _mediator.Send(new SaveGroupCommand(groupRequest));
             if (!result.IsValid)
             {
                 return BadRequest(result.Errors);
@@ -67,8 +75,13 @@ namespace FinDox.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] GroupRequest groupRequest)
         {
-            var result = await _mediator.Send(new SaveGroupCommand(groupRequest, id));
+            var validation = await _groupRequestValidator.ValidateAsync(groupRequest);
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors);
+            }
 
+            var result = await _mediator.Send(new SaveGroupCommand(groupRequest, id));
             if (!result.IsValid)
             {
                 return BadRequest(result.Errors);

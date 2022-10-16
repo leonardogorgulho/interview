@@ -19,6 +19,7 @@ builder.Services.AddMediatR(Assembly.GetExecutingAssembly(), Assembly.Load("FinD
 
 builder.Services.AddSingleton<IValidator<LoginRequest>, LoginValidator>();
 builder.Services.AddSingleton<IValidator<UserEntryRequest>, UserEntryRequestValidator>();
+builder.Services.AddSingleton<IValidator<GroupRequest>, GroupRequestValidator>();
 
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IGroupRepository, GroupRepository>();

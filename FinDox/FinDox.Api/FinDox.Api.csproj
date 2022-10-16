@@ -20,4 +20,8 @@
     <ProjectReference Include="..\FinDox.Repository\FinDox.Repository.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="Findox.IntegrationTests"/>
+	</ItemGroup>
+	
 </Project>
