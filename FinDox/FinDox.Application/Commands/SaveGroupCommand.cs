@@ -4,7 +4,7 @@ using MediatR;
 
 namespace FinDox.Application.Commands
 {
-    public class SaveGroupCommand : IRequest<Group>
+    public class SaveGroupCommand : IRequest<CommandResult<Group>>
     {
         public SaveGroupCommand(GroupRequest groupRequest)
         {

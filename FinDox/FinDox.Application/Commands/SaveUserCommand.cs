@@ -3,7 +3,7 @@ using MediatR;
 
 namespace FinDox.Application.Commands
 {
-    public class SaveUserCommand : IRequest<UserResponse>
+    public class SaveUserCommand : IRequest<CommandResult<UserResponse>>
     {
         public SaveUserCommand(UserEntryRequest userEntry)
         {

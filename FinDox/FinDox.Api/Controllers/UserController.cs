@@ -60,14 +60,14 @@ namespace FinDox.Api.Controllers
                 return BadRequest(validation.Errors);
             }
 
-            var user = await _mediator.Send(new SaveUserCommand(userRequest));
+            var result = await _mediator.Send(new SaveUserCommand(userRequest));
 
-            if (user == null)
+            if (!result.IsValid)
             {
-                return BadRequest();
+                return BadRequest(result.Errors);
             }
 
-            return Ok(user);
+            return Ok(result.Data);
         }
 
         [HttpPut]
@@ -80,14 +80,14 @@ namespace FinDox.Api.Controllers
                 return BadRequest(validation.Errors);
             }
 
-            var user = await _mediator.Send(new SaveUserCommand(userRequest, id));
+            var result = await _mediator.Send(new SaveUserCommand(userRequest, id));
 
-            if (user == null)
+            if (!result.IsValid)
             {
-                return NotFound();
+                return BadRequest(result.Errors);
             }
 
-            return Ok(user);
+            return Ok(result.Data);
         }
 
         [HttpDelete]

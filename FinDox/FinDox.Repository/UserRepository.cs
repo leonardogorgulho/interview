@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using FinDox.Domain.DataTransfer;
 using FinDox.Domain.Entities;
+using FinDox.Domain.Exceptions;
 using FinDox.Domain.Interfaces;
 using FinDox.Domain.Types;
+using Npgsql;
 using System.Data;
 using static Dapper.SqlMapper;
 
@@ -19,18 +21,25 @@ namespace FinDox.Repository
 
         public async Task<User?> Add(User entity)
         {
-            using var connection = _appConnectionFactory.GetConnection();
-
-            var id = await connection.ExecuteScalarAsync<int>("core.add_user",
-            new
+            try
             {
-                p_user = _appConnectionFactory.CreateParameter<UserEntry>("core.user_entry", UserEntry.MapFrom(entity))
-            },
-            commandType: CommandType.StoredProcedure);
+                using var connection = _appConnectionFactory.GetConnection();
+                var id = await connection.ExecuteScalarAsync<int>("core.add_user",
+                new
+                {
+                    p_user = _appConnectionFactory.CreateParameter<UserEntry>("core.user_entry", UserEntry.MapFrom(entity))
+                },
+                commandType: CommandType.StoredProcedure);
 
-            entity.UserId = id;
+                entity.UserId = id;
 
-            return entity;
+                return entity;
+            }
+            catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UniqueViolation)
+            {
+                //log
+                throw new ExistingLoginException(entity.Login);
+            }
         }
 
         public async Task<User?> Get(int id)
@@ -94,12 +103,11 @@ namespace FinDox.Repository
             }
         }
 
-        public async Task<User?> Update(User entity)
+        public async Task<User> Update(User entity)
         {
-            using var connection = _appConnectionFactory.GetConnection();
-
             try
             {
+                using var connection = _appConnectionFactory.GetConnection();
                 await connection.ExecuteAsync(
                     "core.update_user",
                     new
@@ -111,9 +119,10 @@ namespace FinDox.Repository
 
                 return entity;
             }
-            catch (Exception ex)
+            catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UniqueViolation)
             {
-                return null;
+                //log
+                throw new ExistingLoginException(entity.Login);
             }
         }
     }

@@ -53,14 +53,14 @@ namespace FinDox.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] GroupRequest groupRequest)
         {
-            var group = await _mediator.Send(new SaveGroupCommand(groupRequest));
+            var result = await _mediator.Send(new SaveGroupCommand(groupRequest));
 
-            if (group == null)
+            if (!result.IsValid)
             {
-                return BadRequest();
+                return BadRequest(result.Errors);
             }
 
-            return Created($"{Request.GetDisplayUrl()}/{group.GroupId}", group);
+            return Created($"{Request.GetDisplayUrl()}/{result.Data.GroupId}", result.Data);
         }
 
         [HttpPut]

@@ -1,11 +1,12 @@
 ﻿using FinDox.Domain.DataTransfer;
+using FinDox.Domain.Exceptions;
 using FinDox.Domain.Extensions;
 using FinDox.Domain.Interfaces;
 using MediatR;
 
 namespace FinDox.Application.Commands
 {
-    public class SaveUserCommandHandler : IRequestHandler<SaveUserCommand, UserResponse?>
+    public class SaveUserCommandHandler : IRequestHandler<SaveUserCommand, CommandResult<UserResponse>>
     {
         IUserRepository _userRepository;
 
@@ -14,13 +15,20 @@ namespace FinDox.Application.Commands
             _userRepository = userRepository;
         }
 
-        public async Task<UserResponse?> Handle(SaveUserCommand request, CancellationToken cancellationToken)
+        public async Task<CommandResult<UserResponse>> Handle(SaveUserCommand request, CancellationToken cancellationToken)
         {
-            var user = request.IsNewUser ?
-                await _userRepository.Add(request.UserEntry.ToEntity()) :
-                await _userRepository.Update(request.UserEntry.ToEntity(request.Id));
+            try
+            {
+                var user = request.IsNewUser ?
+                    await _userRepository.Add(request.UserEntry.ToEntity()) :
+                    await _userRepository.Update(request.UserEntry.ToEntity(request.Id));
 
-            return user?.ToUserResponse();
+                return CommandResult<UserResponse>.Success(user?.ToUserResponse());
+            }
+            catch (ExistingLoginException ex)
+            {
+                return CommandResult<UserResponse>.WithFailure(ex.Message);
+            }
         }
     }
 }
