@@ -1,9 +1,9 @@
-﻿
-using Dapper;
+﻿using Dapper;
 using FinDox.Domain.DataTransfer;
 using FinDox.Domain.Entities;
 using FinDox.Domain.Exceptions;
 using FinDox.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 using System.Data;
 
@@ -12,10 +12,12 @@ namespace FinDox.Repository
     public class GroupRepository : IGroupRepository
     {
         private readonly AppConnectionFactory _appConnectionFactory;
+        private readonly ILogger<IGroupRepository> _logger;
 
-        public GroupRepository(AppConnectionFactory appConnectionFactory)
+        public GroupRepository(AppConnectionFactory appConnectionFactory, ILogger<IGroupRepository> logger)
         {
             _appConnectionFactory = appConnectionFactory;
+            _logger = logger;
         }
 
         public async Task<Group> Add(Group entity)
@@ -35,7 +37,7 @@ namespace FinDox.Repository
             }
             catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UniqueViolation)
             {
-                //log
+                _logger.LogError(ex.Message);
                 throw new ExistingGroupException(entity.Name);
             }
         }
@@ -120,7 +122,7 @@ namespace FinDox.Repository
             }
             catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UniqueViolation)
             {
-                //log
+                _logger.LogError(ex.Message);
                 throw new ExistingGroupException(entity.Name);
             }
         }

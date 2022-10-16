@@ -4,6 +4,7 @@ using FinDox.Domain.Entities;
 using FinDox.Domain.Exceptions;
 using FinDox.Domain.Interfaces;
 using FinDox.Domain.Types;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 using System.Data;
 using static Dapper.SqlMapper;
@@ -13,10 +14,12 @@ namespace FinDox.Repository
     public class UserRepository : IUserRepository
     {
         private readonly AppConnectionFactory _appConnectionFactory;
+        private readonly ILogger<IGroupRepository> _logger;
 
-        public UserRepository(AppConnectionFactory appConnectionFactory)
+        public UserRepository(AppConnectionFactory appConnectionFactory, ILogger<IGroupRepository> logger)
         {
             _appConnectionFactory = appConnectionFactory;
+            _logger = logger;
         }
 
         public async Task<User?> Add(User entity)
@@ -37,7 +40,7 @@ namespace FinDox.Repository
             }
             catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UniqueViolation)
             {
-                //log
+                _logger.LogError(ex.Message);
                 throw new ExistingLoginException(entity.Login);
             }
         }
@@ -121,7 +124,7 @@ namespace FinDox.Repository
             }
             catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UniqueViolation)
             {
-                //log
+                _logger.LogError(ex.Message);
                 throw new ExistingLoginException(entity.Login);
             }
         }
