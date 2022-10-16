@@ -2,12 +2,12 @@
 {
     public interface ICRUDRepositoy<T>
     {
-        Task<T?> Add(T entity);
+        Task<T> Add(T entity);
 
         Task<bool> Remove(int id);
 
-        Task<T?> Update(T entity);
+        Task<T> Update(T entity);
 
-        Task<T?> Get(int id);
+        Task<T> Get(int id);
     }
 }
