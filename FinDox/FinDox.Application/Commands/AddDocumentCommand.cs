@@ -4,7 +4,7 @@ using MediatR;
 
 namespace FinDox.Application.Commands
 {
-    public class AddDocumentCommand : IRequest<Document>
+    public class AddDocumentCommand : IRequest<CommandResult<Document>>
     {
         public AddDocumentCommand(DocumentWithFile document, byte[] fileContent)
         {

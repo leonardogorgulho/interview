@@ -38,7 +38,12 @@ namespace FinDox.Api.Controllers
                 Size = file.Length
             }, bytes));
 
-            return Created($"{Request.GetDisplayUrl()}/{result.DocumentId}", result);
+            if (!result.IsValid)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Created($"{Request.GetDisplayUrl()}/{result.Data.DocumentId}", result.Data);
         }
 
         [HttpPut]

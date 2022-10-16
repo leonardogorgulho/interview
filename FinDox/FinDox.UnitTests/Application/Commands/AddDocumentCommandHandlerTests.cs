@@ -3,6 +3,7 @@ using FinDox.Application.Commands;
 using FinDox.Domain.DataTransfer;
 using FinDox.Domain.Entities;
 using FinDox.Domain.Interfaces;
+using FluentAssertions;
 using Moq;
 
 namespace FinDox.UnitTests.Application.Commands
@@ -28,13 +29,18 @@ namespace FinDox.UnitTests.Application.Commands
         }
 
         [Test]
-        public void Handle_should_fail_if_file_content_is_null()
+        public async Task Handle_should_fail_if_file_content_is_null()
         {
             //Arrange
             var command = new AddDocumentCommand(It.IsAny<DocumentWithFile>(), null);
 
-            //Act and Assert
-            Assert.ThrowsAsync<ArgumentNullException>(() => InstanceUnderTest.Handle(command, It.IsAny<CancellationToken>()));
+            //Act
+            var result = await InstanceUnderTest.Handle(command, It.IsAny<CancellationToken>());
+
+            //Assert
+            result.Should().NotBeNull();
+            result.IsValid.Should().BeFalse();
+            result.Errors.Should().Contain("File content cannot be null");
         }
 
         [Test]
@@ -47,6 +53,7 @@ namespace FinDox.UnitTests.Application.Commands
             var expectedFileId = 1;
             var expectedDocument = _fixture.Create<Document>();
             expectedDocument.FileId = expectedFileId;
+            var expectedResult = CommandResult<Document>.Success(expectedDocument);
 
             _fileRepositoryMock.Setup(d => d.AddFile(content))
                 .ReturnsAsync(expectedFileId);
@@ -57,10 +64,11 @@ namespace FinDox.UnitTests.Application.Commands
             var result = await InstanceUnderTest.Handle(command, It.IsAny<CancellationToken>());
 
             //Assert
-            Assert.IsNotNull(command.FileContent);
-            Assert.IsNotNull(command.Document);
-            Assert.IsNotNull(result);
-            Assert.That(result, Is.EqualTo(expectedDocument));
+            command.FileContent.Should().NotBeNull();
+            command.Document.Should().NotBeNull();
+            result.Should().NotBeNull();
+            result.IsValid.Should().BeTrue();
+            result.Should().BeEquivalentTo(expectedResult);
         }
     }
 }
