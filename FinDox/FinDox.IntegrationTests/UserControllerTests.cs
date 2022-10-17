@@ -14,10 +14,9 @@ namespace FinDox.IntegrationTests
         {
             var uniqueData = DateTime.Now.ToString("yyyyMMddhhmmss");
             var expectedUserName = uniqueData;
-            var login = expectedUserName = uniqueData;
+            var login = uniqueData;
             var password = "12345678901234567890123456789012";
             var role = "R";
-
 
             var httpResponse = await Client.PostAsJsonAsync("/User", new UserEntryRequest
             {
@@ -39,7 +38,7 @@ namespace FinDox.IntegrationTests
         {
             var uniqueData = DateTime.Now.ToString("yyyyMMddhhmmss");
             var expectedUserName = uniqueData;
-            var login = expectedUserName = uniqueData;
+            var login = uniqueData;
             var password = "12345678901234567890123456789012";
             var role = "R";
 
