@@ -22,7 +22,7 @@ namespace FinDox.Repository
             _logger = logger;
         }
 
-        public async Task<User?> Add(User entity)
+        public async Task<User> Add(User entity)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace FinDox.Repository
             }
         }
 
-        public async Task<User?> Get(int id)
+        public async Task<User> Get(int id)
         {
             using var connection = _appConnectionFactory.GetConnection();
 
@@ -90,20 +90,12 @@ namespace FinDox.Repository
         public async Task<bool> Remove(int id)
         {
             using var connection = _appConnectionFactory.GetConnection();
+            var affected = await connection.ExecuteScalarAsync<int>(
+                "core.delete_user",
+                new { p_user_id = id },
+                commandType: CommandType.StoredProcedure);
 
-            try
-            {
-                await connection.ExecuteAsync(
-                    "core.delete_user",
-                    new { p_user_id = id },
-                    commandType: CommandType.StoredProcedure);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
+            return affected > 0;
         }
 
         public async Task<User> Update(User entity)

@@ -113,9 +113,14 @@ namespace FinDox.Api.Controllers
         [Route("AddUserToGroup")]
         public async Task<IActionResult> AddUser([FromBody] UserGroup userGroup)
         {
-            var isAdded = await _mediator.Send(new AddUserToGroupCommand(userGroup));
+            var result = await _mediator.Send(new AddUserToGroupCommand(userGroup));
 
-            if (!isAdded)
+            if (!result.IsValid)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            if (!result.Data)
             {
                 return BadRequest($"User {userGroup.UserId} is already attached to group {userGroup.GroupId}");
             }

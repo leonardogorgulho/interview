@@ -4,14 +4,17 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
 
-namespace FinDox.IntegrationTests
+
+namespace FinDox.IntegrationTests.Groups
 {
-    public class GroupControllerTests : BaseTest
+    public class GroupCRUDOperationsTests : GroupBaseTest
     {
         [Test, Order(1)]
         public async Task Post_should_add_successfully_the_group()
         {
-            _ = await PostGroup();
+            var postedGroup = await PostGroup();
+
+            _ = await DeleteGroup(postedGroup.GroupId);
         }
 
         [Test, Order(2)]
@@ -31,6 +34,8 @@ namespace FinDox.IntegrationTests
             group.Should().NotBeNull();
             group.GroupId.Should().BeGreaterThan(0);
             group.Name.Should().Be(expectedGroupName);
+
+            _ = await DeleteGroup(group.GroupId);
         }
 
         [Test, Order(3)]
@@ -41,6 +46,8 @@ namespace FinDox.IntegrationTests
             var group = await Client.GetFromJsonAsync<Group>($"/Group/{postedGroup.GroupId}");
 
             group.Should().BeEquivalentTo(postedGroup);
+
+            _ = await DeleteGroup(postedGroup.GroupId);
         }
 
         [Test, Order(4)]
@@ -48,27 +55,9 @@ namespace FinDox.IntegrationTests
         {
             var postedGroup = await PostGroup();
 
-            var httpResponse = await Client.DeleteAsync($"/Group/{postedGroup.GroupId}");
+            var httpResponse = await DeleteGroup(postedGroup.GroupId);
 
             httpResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-        }
-
-        private async Task<Group> PostGroup()
-        {
-            var expectedGroupName = Guid.NewGuid().ToString();
-
-            var httpResponse = await Client.PostAsJsonAsync("/Group", new GroupRequest
-            {
-                Name = expectedGroupName
-            });
-
-            var group = JsonConvert.DeserializeObject<Group>(await httpResponse.Content.ReadAsStringAsync());
-
-            group.Should().NotBeNull();
-            group.GroupId.Should().BeGreaterThan(0);
-            group.Name.Should().Be(expectedGroupName);
-
-            return group;
         }
     }
 }

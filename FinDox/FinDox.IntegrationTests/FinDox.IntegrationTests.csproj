@@ -25,4 +25,8 @@
     <ProjectReference Include="..\FinDox.Repository\FinDox.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Documents\" />
+  </ItemGroup>
+
 </Project>

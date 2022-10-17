@@ -6,6 +6,7 @@ using FinDox.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using System.Data;
+using static Dapper.SqlMapper;
 
 namespace FinDox.Repository
 {
@@ -44,17 +45,25 @@ namespace FinDox.Repository
 
         public async Task<bool> AddUser(UserGroup userGroup)
         {
-            using var connection = _appConnectionFactory.GetConnection();
-            var result = await connection.ExecuteScalarAsync<bool>(
-                "core.add_user_group",
-                new
-                {
-                    p_user_id = userGroup.UserId,
-                    p_group_id = userGroup.GroupId
-                },
-                commandType: CommandType.StoredProcedure);
+            try
+            {
+                using var connection = _appConnectionFactory.GetConnection();
+                var result = await connection.ExecuteScalarAsync<bool>(
+                    "core.add_user_group",
+                    new
+                    {
+                        p_user_id = userGroup.UserId,
+                        p_group_id = userGroup.GroupId
+                    },
+                    commandType: CommandType.StoredProcedure);
 
-            return result;
+                return result;
+            }
+            catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.ForeignKeyViolation)
+            {
+                _logger.LogError(ex.Message);
+                throw new InvalidUserGroupException(userGroup.UserId, userGroup.GroupId);
+            }
         }
 
         public async Task<bool> RemoveUser(UserGroup userGroup)
@@ -88,20 +97,12 @@ namespace FinDox.Repository
         public async Task<bool> Remove(int id)
         {
             using var connection = _appConnectionFactory.GetConnection();
+            var affected = await connection.ExecuteScalarAsync<int>(
+                "core.delete_group",
+                new { p_group_id = id },
+                commandType: CommandType.StoredProcedure);
 
-            try
-            {
-                await connection.ExecuteAsync(
-                    "core.delete_group",
-                    new { p_group_id = id },
-                    commandType: CommandType.StoredProcedure);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
+            return affected > 0;
         }
 
         public async Task<Group> Update(Group entity)

@@ -1,6 +1,6 @@
 ﻿namespace FinDox.Domain.DataTransfer
 {
-    public class CommandResult<T> where T : class
+    public class CommandResult<T>
     {
         public T Data { get; private set; }
 
