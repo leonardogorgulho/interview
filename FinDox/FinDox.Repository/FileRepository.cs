@@ -18,14 +18,13 @@ namespace FinDox.Repository
         public async Task<int> AddFile(byte[] fileContent)
         {
             using var connection = _appConnectionFactory.GetConnection();
-
             var id = await connection.ExecuteScalarAsync<int>(
                 "core.add_file",
-            new
-            {
-                p_file = _appConnectionFactory.CreateParameter<byte[]>(NpgsqlDbType.Bytea, fileContent)
-            },
-            commandType: CommandType.StoredProcedure);
+                new
+                {
+                    p_file = _appConnectionFactory.CreateParameter<byte[]>(NpgsqlDbType.Bytea, fileContent)
+                },
+                commandType: CommandType.StoredProcedure);
 
             return id;
         }
@@ -33,7 +32,6 @@ namespace FinDox.Repository
         public async Task<DocumentFile> GetFile(int id)
         {
             using var connection = _appConnectionFactory.GetConnection();
-
             var result = await connection.QueryFirstOrDefaultAsync<DocumentFile>(
                 "core.get_file",
                 new { p_file_id = id },

@@ -176,20 +176,12 @@ namespace FinDox.Repository
         public async Task<bool> Remove(int id)
         {
             using var connection = _appConnectionFactory.GetConnection();
+            var affected = await connection.ExecuteScalarAsync<int>(
+                "core.delete_document",
+                new { p_document_id = id },
+                commandType: CommandType.StoredProcedure);
 
-            try
-            {
-                await connection.ExecuteAsync(
-                    "core.delete_document",
-                    new { p_document_id = id },
-                    commandType: CommandType.StoredProcedure);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
+            return affected > 0;
         }
 
         public async Task<bool> RemoveAccess(DocumentPermissionEntry documentPermission)

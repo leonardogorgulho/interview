@@ -63,7 +63,7 @@ namespace FinDox.Api.Controllers
                 return BadRequest();
             }
 
-            return Ok(result);
+            return Ok(entry);
         }
 
         [HttpDelete]
@@ -83,7 +83,7 @@ namespace FinDox.Api.Controllers
                 return BadRequest();
             }
 
-            return Ok(result);
+            return Ok(entry);
         }
 
         [HttpGet]
@@ -134,10 +134,10 @@ namespace FinDox.Api.Controllers
 
             if (!result)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            return Ok(result);
+            return Ok();
         }
     }
 }
