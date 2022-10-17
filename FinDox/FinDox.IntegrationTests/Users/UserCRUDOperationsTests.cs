@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 
 namespace FinDox.IntegrationTests.Users
 {
-    public class UserCRUDOperationsTests : UserBaseTest
+    public class UserCRUDOperationsTests : BaseTest
     {
         [Test, Order(1)]
         public async Task Post_should_add_successfully_the_user()
@@ -15,7 +15,7 @@ namespace FinDox.IntegrationTests.Users
             _ = await DeleteUser(postedUser.UserId);
         }
 
-        [Test, Order(2)]
+        [Test]
         public async Task Put_should_update_successfully_the_user()
         {
             var postedUser = await PostUser();
@@ -43,7 +43,7 @@ namespace FinDox.IntegrationTests.Users
             _ = await DeleteUser(postedUser.UserId);
         }
 
-        [Test, Order(3)]
+        [Test]
         public async Task Get_should_retrieve_user()
         {
             var postedUser = await PostUser();
@@ -55,7 +55,7 @@ namespace FinDox.IntegrationTests.Users
             _ = await DeleteUser(postedUser.UserId);
         }
 
-        [Test, Order(4)]
+        [Test]
         public async Task GetUsers_should_retrieve_user()
         {
             var postedUser1 = await PostUser();
@@ -70,7 +70,7 @@ namespace FinDox.IntegrationTests.Users
             _ = await DeleteUser(postedUser2.UserId);
         }
 
-        [Test, Order(5)]
+        [Test]
         public async Task Delete_should_delete_successfully_user()
         {
             var postedUser = await PostUser();

@@ -7,9 +7,9 @@ using System.Net.Http.Json;
 
 namespace FinDox.IntegrationTests.Groups
 {
-    public class GroupCRUDOperationsTests : GroupBaseTest
+    public class GroupCRUDOperationsTests : BaseTest
     {
-        [Test, Order(1)]
+        [Test]
         public async Task Post_should_add_successfully_the_group()
         {
             var postedGroup = await PostGroup();
@@ -17,7 +17,7 @@ namespace FinDox.IntegrationTests.Groups
             _ = await DeleteGroup(postedGroup.GroupId);
         }
 
-        [Test, Order(2)]
+        [Test]
         public async Task Put_should_update_successfully_the_group()
         {
             var group = await PostGroup();
@@ -38,7 +38,7 @@ namespace FinDox.IntegrationTests.Groups
             _ = await DeleteGroup(group.GroupId);
         }
 
-        [Test, Order(3)]
+        [Test]
         public async Task Get_should_retrieve_group()
         {
             var postedGroup = await PostGroup();
@@ -50,7 +50,7 @@ namespace FinDox.IntegrationTests.Groups
             _ = await DeleteGroup(postedGroup.GroupId);
         }
 
-        [Test, Order(4)]
+        [Test]
         public async Task Delete_should_delete_successfully_group()
         {
             var postedGroup = await PostGroup();
@@ -58,6 +58,25 @@ namespace FinDox.IntegrationTests.Groups
             var httpResponse = await DeleteGroup(postedGroup.GroupId);
 
             httpResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+        }
+
+        [Test]
+        public async Task AddUser()
+        {
+            var postedGroup = await PostGroup();
+            var postedUser = await PostUser();
+
+            var userGroup = new UserGroup
+            {
+                GroupId = postedGroup.GroupId,
+                UserId = postedUser.UserId
+            };
+
+            var httpResponse = await Client.PostAsJsonAsync<UserGroup>($"/Group/AddUserToGroup", userGroup);
+            var returnedUserGroup = JsonConvert.DeserializeObject<UserGroup>(await httpResponse.Content.ReadAsStringAsync());
+
+            httpResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            userGroup.Should().BeEquivalentTo(returnedUserGroup);
         }
     }
 }
