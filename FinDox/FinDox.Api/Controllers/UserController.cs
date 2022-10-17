@@ -24,6 +24,11 @@ namespace FinDox.Api.Controllers
             _entryRequestValidator = entryRequestValidator;
         }
 
+        /// <summary>
+        /// Gets the user information by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> Get(int id)
@@ -38,6 +43,11 @@ namespace FinDox.Api.Controllers
             return Ok(user);
         }
 
+        /// <summary>
+        /// Gets documents information related to the user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}/documents")]
         public async Task<IActionResult> GetDocuments(int id)
@@ -52,6 +62,11 @@ namespace FinDox.Api.Controllers
             return Ok(permissions);
         }
 
+        /// <summary>
+        /// Creates a new user
+        /// </summary>
+        /// <param name="userRequest"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] UserEntryRequest userRequest)
         {
@@ -71,6 +86,12 @@ namespace FinDox.Api.Controllers
             return Created($"{Request.GetDisplayUrl()}/{result.Data.UserId}", result.Data);
         }
 
+        /// <summary>
+        /// Updates an existing user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="userRequest"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] UserEntryRequest userRequest)
@@ -96,6 +117,11 @@ namespace FinDox.Api.Controllers
             return Ok(result.Data);
         }
 
+        /// <summary>
+        /// Removes the user informed
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -110,6 +136,14 @@ namespace FinDox.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Gets a list of users (with server pagination)
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="login"></param>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("list")]
         public async Task<IActionResult> GetUsers(string name, string login, int skip = 0, int take = 20)

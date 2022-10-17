@@ -22,6 +22,11 @@ namespace FinDox.Api.Controllers
             _validator = validator;
         }
 
+        /// <summary>
+        /// Helper to convert password into a hash before sending the Login post
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("ConvertPassword")]
         public string ConvertPassword([FromBody] string password)
@@ -34,6 +39,11 @@ namespace FinDox.Api.Controllers
             return Convert.ToHexString(hashBytes);
         }
 
+        /// <summary>
+        /// Retrieves the user by login and password (hash) with a token that is used to authenticate the user
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest login)

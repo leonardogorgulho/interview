@@ -21,6 +21,12 @@ namespace FinDox.Api.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Creates a new document record with a file object in the database
+        /// </summary>
+        /// <param name="description"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = Roles.AdminAndManager)]
         public async Task<IActionResult> Post([FromHeader] string description, IFormFile file)
@@ -46,6 +52,12 @@ namespace FinDox.Api.Controllers
             return Created($"{Request.GetDisplayUrl()}/{result.Data.DocumentId}", result.Data);
         }
 
+        /// <summary>
+        /// Grant user and/or group permission to the document
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="entry"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("{id}/GrantPermission")]
         [Authorize(Roles = Roles.Admin)]
@@ -66,6 +78,12 @@ namespace FinDox.Api.Controllers
             return Ok(entry);
         }
 
+        /// <summary>
+        /// Remove the document permission from user and/or group
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="entry"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{id}/RemovePermission")]
         [Authorize(Roles = Roles.Admin)]
@@ -86,6 +104,11 @@ namespace FinDox.Api.Controllers
             return Ok(entry);
         }
 
+        /// <summary>
+        /// Gets all the permissions related to the document
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}/Permissions")]
         [Authorize(Roles = Roles.Admin)]
@@ -96,6 +119,11 @@ namespace FinDox.Api.Controllers
             return Ok(docs);
         }
 
+        /// <summary>
+        /// Get all the document's information, less the file
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> Get(int id)
@@ -110,6 +138,11 @@ namespace FinDox.Api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Downloads the file attached to the document record
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}/Download")]
         public async Task<IActionResult> GetDownload(int id)
@@ -125,6 +158,11 @@ namespace FinDox.Api.Controllers
             return File(stream, result.ContentType, result.Name);
         }
 
+        /// <summary>
+        /// Deletes the document record along with the relation with users and document permissions
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{id}")]
         [Authorize(Roles = Roles.Admin)]

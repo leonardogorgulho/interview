@@ -25,6 +25,11 @@ namespace FinDox.Api.Controllers
             _groupRequestValidator = groupRequestValidator;
         }
 
+        /// <summary>
+        /// Get the group record by its Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> Get(int id)
@@ -39,6 +44,11 @@ namespace FinDox.Api.Controllers
             return Ok(group);
         }
 
+        /// <summary>
+        /// Gets document information related to the group in parameter
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}/documents")]
         public async Task<IActionResult> GetDocuments(int id)
@@ -53,6 +63,11 @@ namespace FinDox.Api.Controllers
             return Ok(permissions);
         }
 
+        /// <summary>
+        /// Creates a new group 
+        /// </summary>
+        /// <param name="groupRequest"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] GroupRequest groupRequest)
         {
@@ -71,6 +86,12 @@ namespace FinDox.Api.Controllers
             return Created($"{Request.GetDisplayUrl()}/{result.Data.GroupId}", result.Data);
         }
 
+        /// <summary>
+        /// Updates an existing group 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="groupRequest"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] GroupRequest groupRequest)
@@ -95,6 +116,11 @@ namespace FinDox.Api.Controllers
             return Ok(result.Data);
         }
 
+        /// <summary>
+        /// Deletes the group along with any link to users or document permission
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -109,6 +135,11 @@ namespace FinDox.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Creates the link between group and user
+        /// </summary>
+        /// <param name="userGroup"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("AddUserToGroup")]
         public async Task<IActionResult> AddUser([FromBody] UserGroup userGroup)
@@ -128,6 +159,12 @@ namespace FinDox.Api.Controllers
             return Ok(userGroup);
         }
 
+        /// <summary>
+        /// Removes the informed user from the group
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{groupId}/user/{userId}")]
         public async Task<IActionResult> RemoveUser(int groupId, int userId)
@@ -142,6 +179,11 @@ namespace FinDox.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Gets all the users related to the group
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{groupId}/users")]
         public async Task<IActionResult> GetUsersFromGroup(int groupId)
@@ -156,6 +198,13 @@ namespace FinDox.Api.Controllers
             return Ok(groupWithUsers);
         }
 
+        /// <summary>
+        /// Gets all the groups (with server pagination)
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("list")]
         public async Task<IActionResult> GetGroups(string name, int skip = 0, int take = 20)
