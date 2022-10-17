@@ -20,10 +20,52 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{09DE969F-E6D6-456B-A13B-A5F2AA79B766}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{9BA829EC-56A5-4BD1-8431-CCA2B63285D2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "functions", "functions", "{966BAD3D-07A4-4DD1-A9E0-D2163A215A4F}"
 	ProjectSection(SolutionItems) = preProject
-		scripts\1_type_creation.sql = scripts\1_type_creation.sql
-		scripts\2_table_creation.sql = scripts\2_table_creation.sql
-		scripts\3_sp_creation.sql = scripts\3_sp_creation.sql
+		scripts\functions\add_document.sql = scripts\functions\add_document.sql
+		scripts\functions\add_document_permission.sql = scripts\functions\add_document_permission.sql
+		scripts\functions\add_file.sql = scripts\functions\add_file.sql
+		scripts\functions\add_group.sql = scripts\functions\add_group.sql
+		scripts\functions\add_user.sql = scripts\functions\add_user.sql
+		scripts\functions\add_user_group.sql = scripts\functions\add_user_group.sql
+		scripts\functions\can_user_download_document.sql = scripts\functions\can_user_download_document.sql
+		scripts\functions\delete_document.sql = scripts\functions\delete_document.sql
+		scripts\functions\delete_document_permission.sql = scripts\functions\delete_document_permission.sql
+		scripts\functions\delete_group.sql = scripts\functions\delete_group.sql
+		scripts\functions\delete_user.sql = scripts\functions\delete_user.sql
+		scripts\functions\delete_user_group.sql = scripts\functions\delete_user_group.sql
+		scripts\functions\get_document.sql = scripts\functions\get_document.sql
+		scripts\functions\get_document_by_group.sql = scripts\functions\get_document_by_group.sql
+		scripts\functions\get_document_by_user.sql = scripts\functions\get_document_by_user.sql
+		scripts\functions\get_document_permissions.sql = scripts\functions\get_document_permissions.sql
+		scripts\functions\get_document_with_file.sql = scripts\functions\get_document_with_file.sql
+		scripts\functions\get_file.sql = scripts\functions\get_file.sql
+		scripts\functions\get_group.sql = scripts\functions\get_group.sql
+		scripts\functions\get_groups.sql = scripts\functions\get_groups.sql
+		scripts\functions\get_user.sql = scripts\functions\get_user.sql
+		scripts\functions\get_users.sql = scripts\functions\get_users.sql
+		scripts\functions\get_users_from_group.sql = scripts\functions\get_users_from_group.sql
+		scripts\functions\login.sql = scripts\functions\login.sql
+		scripts\functions\update_document.sql = scripts\functions\update_document.sql
+		scripts\functions\update_group.sql = scripts\functions\update_group.sql
+		scripts\functions\update_user.sql = scripts\functions\update_user.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tables", "tables", "{C66802FB-1C1A-4557-AEDD-129483CDD734}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\tables\document.sql = scripts\tables\document.sql
+		scripts\tables\document_permission.sql = scripts\tables\document_permission.sql
+		scripts\tables\file.sql = scripts\tables\file.sql
+		scripts\tables\group.sql = scripts\tables\group.sql
+		scripts\tables\user.sql = scripts\tables\user.sql
+		scripts\tables\user_group.sql = scripts\tables\user_group.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "types", "types", "{FAD76530-A286-4024-9636-36FE444BE7EB}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\types\document_entry.sql = scripts\types\document_entry.sql
+		scripts\types\user_entry.sql = scripts\types\user_entry.sql
 	EndProjectSection
 EndProject
 Global
@@ -67,6 +109,9 @@ Global
 		{73F4940A-BD10-4487-ADF2-ACFFE1A438F1} = {FA7E523A-AEA1-4CDB-A049-D3D92A88E10D}
 		{04803E55-1AC8-40E0-8F01-878774C3BE0D} = {09DE969F-E6D6-456B-A13B-A5F2AA79B766}
 		{3621F1FC-DF56-435C-8181-C42FC39E73EE} = {09DE969F-E6D6-456B-A13B-A5F2AA79B766}
+		{966BAD3D-07A4-4DD1-A9E0-D2163A215A4F} = {9BA829EC-56A5-4BD1-8431-CCA2B63285D2}
+		{C66802FB-1C1A-4557-AEDD-129483CDD734} = {9BA829EC-56A5-4BD1-8431-CCA2B63285D2}
+		{FAD76530-A286-4024-9636-36FE444BE7EB} = {9BA829EC-56A5-4BD1-8431-CCA2B63285D2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {003761B3-CB5B-4F36-85B5-2F15F48C224F}
