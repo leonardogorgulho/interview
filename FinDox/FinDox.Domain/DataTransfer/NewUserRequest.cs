@@ -2,7 +2,7 @@
 
 namespace FinDox.Domain.DataTransfer
 {
-    public class UserEntryRequest
+    public class NewUserRequest
     {
         public string Name { get; set; }
 

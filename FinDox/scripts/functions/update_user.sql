@@ -14,7 +14,6 @@ AS $BODY$
 		UPDATE core.user
 		SET login = p_user.login,
 			name = p_user.name,
-			password = p_user.password,
 			role = p_user.role
 		WHERE user_id = p_user_id
 		RETURNING 1

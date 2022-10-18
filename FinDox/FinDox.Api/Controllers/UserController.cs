@@ -16,12 +16,17 @@ namespace FinDox.Api.Controllers
     public class UserController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly IValidator<UserEntryRequest> _entryRequestValidator;
+        private readonly IValidator<NewUserRequest> _newUserRequestValidator;
+        private readonly IValidator<ChangeUserRequest> _changeUserRequestValidator;
 
-        public UserController(IMediator mediator, IValidator<UserEntryRequest> entryRequestValidator)
+        public UserController(
+            IMediator mediator,
+            IValidator<NewUserRequest> newUserRequestValidator,
+            IValidator<ChangeUserRequest> changeUserRequestValidator)
         {
             _mediator = mediator;
-            _entryRequestValidator = entryRequestValidator;
+            _newUserRequestValidator = newUserRequestValidator;
+            _changeUserRequestValidator = changeUserRequestValidator;
         }
 
         /// <summary>
@@ -68,15 +73,15 @@ namespace FinDox.Api.Controllers
         /// <param name="userRequest"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] UserEntryRequest userRequest)
+        public async Task<IActionResult> Post([FromBody] NewUserRequest userRequest)
         {
-            var validation = await _entryRequestValidator.ValidateAsync(userRequest);
+            var validation = await _newUserRequestValidator.ValidateAsync(userRequest);
             if (!validation.IsValid)
             {
                 return BadRequest(validation.Errors);
             }
 
-            var result = await _mediator.Send(new SaveUserCommand(userRequest));
+            var result = await _mediator.Send(new SaveNewUserCommand(userRequest));
 
             if (!result.IsValid)
             {
@@ -94,15 +99,15 @@ namespace FinDox.Api.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] UserEntryRequest userRequest)
+        public async Task<IActionResult> Put(int id, [FromBody] ChangeUserRequest userRequest)
         {
-            var validation = await _entryRequestValidator.ValidateAsync(userRequest);
+            var validation = await _changeUserRequestValidator.ValidateAsync(userRequest);
             if (!validation.IsValid)
             {
                 return BadRequest(validation.Errors);
             }
 
-            var result = await _mediator.Send(new SaveUserCommand(userRequest, id));
+            var result = await _mediator.Send(new SaveChangedUserCommand(userRequest, id));
 
             if (!result.IsValid)
             {

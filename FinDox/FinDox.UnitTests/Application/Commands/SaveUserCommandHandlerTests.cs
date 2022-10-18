@@ -30,8 +30,8 @@ namespace FinDox.UnitTests.Application.Commands
         public async Task Handle_should_add_user_and_return_result_successfully()
         {
             //Arrange
-            var userEntry = _fixture.Create<UserEntryRequest>();
-            var command = new SaveUserCommand(userEntry);
+            var userEntry = _fixture.Create<NewUserRequest>();
+            var command = new SaveNewUserCommand(userEntry);
             var expectedUser = userEntry.ToEntity();
             expectedUser.UserId = 1;
 
@@ -53,9 +53,9 @@ namespace FinDox.UnitTests.Application.Commands
         public async Task Handle_should_return_failure_when_login_already_exists()
         {
             //Arrange
-            var userEntry = _fixture.Create<UserEntryRequest>();
+            var userEntry = _fixture.Create<NewUserRequest>();
             userEntry.Login = "admin";
-            var command = new SaveUserCommand(userEntry);
+            var command = new SaveNewUserCommand(userEntry);
             var expectedException = new ExistingLoginException(userEntry.Login);
             _userRepositoryMock.Setup(d => d.Add(It.IsAny<User>()))
                 .ThrowsAsync(expectedException);
@@ -75,8 +75,8 @@ namespace FinDox.UnitTests.Application.Commands
         public async Task Handle_should_update_user_and_return_result_successfully()
         {
             //Arrange
-            var userEntry = _fixture.Create<UserEntryRequest>();
-            var command = new SaveUserCommand(userEntry, 1);
+            var userEntry = _fixture.Create<ChangeUserRequest>();
+            var command = new SaveChangedUserCommand(userEntry, 1);
             var expectedUser = userEntry.ToEntity();
 
             _userRepositoryMock.Setup(d => d.Update(It.IsAny<User>()))

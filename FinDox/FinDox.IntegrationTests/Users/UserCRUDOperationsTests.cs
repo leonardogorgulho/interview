@@ -23,14 +23,12 @@ namespace FinDox.IntegrationTests.Users
             var uniqueData = Guid.NewGuid().ToString();
             var expectedUserName = uniqueData;
             var login = uniqueData.Substring(0, 10);
-            var password = "12345678901234567890123456789012";
             var role = "R";
 
-            var httpResponse = await Client.PutAsJsonAsync($"/User/{postedUser.UserId}", new UserEntryRequest
+            var httpResponse = await Client.PutAsJsonAsync($"/User/{postedUser.UserId}", new ChangeUserRequest
             {
                 Name = expectedUserName,
                 Login = login,
-                Password = password,
                 Role = role
             });
 

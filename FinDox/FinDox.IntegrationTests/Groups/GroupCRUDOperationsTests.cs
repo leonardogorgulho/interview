@@ -77,6 +77,9 @@ namespace FinDox.IntegrationTests.Groups
 
             httpResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             userGroup.Should().BeEquivalentTo(returnedUserGroup);
+
+            await DeleteGroup(postedGroup.GroupId);
+            await DeleteUser(postedUser.UserId);
         }
     }
 }

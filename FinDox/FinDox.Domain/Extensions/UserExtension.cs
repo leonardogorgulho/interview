@@ -16,7 +16,7 @@ namespace FinDox.Domain.Extensions
             };
         }
 
-        public static User ToEntity(this UserEntryRequest request, int? id = null)
+        public static User ToEntity(this NewUserRequest request, int? id = null)
         {
             return new User
             {
@@ -24,6 +24,17 @@ namespace FinDox.Domain.Extensions
                 Name = request.Name,
                 Login = request.Login,
                 Password = request.Password,
+                Role = request.Role
+            };
+        }
+
+        public static User ToEntity(this ChangeUserRequest request, int? id = null)
+        {
+            return new User
+            {
+                UserId = id ?? 0,
+                Name = request.Name,
+                Login = request.Login,
                 Role = request.Role
             };
         }

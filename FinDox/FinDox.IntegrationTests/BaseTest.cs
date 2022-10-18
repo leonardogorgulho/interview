@@ -71,7 +71,7 @@ namespace FinDox.IntegrationTests
             var password = "12345678901234567890123456789012";
             var role = "R";
 
-            var httpResponse = await Client.PostAsJsonAsync("/User", new UserEntryRequest
+            var httpResponse = await Client.PostAsJsonAsync("/User", new NewUserRequest
             {
                 Name = expectedUserName,
                 Login = login,

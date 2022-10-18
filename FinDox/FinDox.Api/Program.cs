@@ -18,7 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly(), Assembly.Load("FinDox.Application"));
 
 builder.Services.AddSingleton<IValidator<LoginRequest>, LoginValidator>();
-builder.Services.AddSingleton<IValidator<UserEntryRequest>, UserEntryRequestValidator>();
+builder.Services.AddSingleton<IValidator<NewUserRequest>, NewUserRequestValidator>();
+builder.Services.AddSingleton<IValidator<ChangeUserRequest>, ChangeUserRequestValidator>();
 builder.Services.AddSingleton<IValidator<GroupRequest>, GroupRequestValidator>();
 
 builder.Services.AddSingleton<IUserRepository, UserRepository>();

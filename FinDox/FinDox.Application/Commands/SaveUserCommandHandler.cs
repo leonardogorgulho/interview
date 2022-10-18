@@ -6,7 +6,9 @@ using MediatR;
 
 namespace FinDox.Application.Commands
 {
-    public class SaveUserCommandHandler : IRequestHandler<SaveUserCommand, CommandResult<UserResponse>>
+    public class SaveUserCommandHandler :
+        IRequestHandler<SaveNewUserCommand, CommandResult<UserResponse>>,
+        IRequestHandler<SaveChangedUserCommand, CommandResult<UserResponse>>
     {
         private readonly IUserRepository _userRepository;
 
@@ -15,13 +17,25 @@ namespace FinDox.Application.Commands
             _userRepository = userRepository;
         }
 
-        public async Task<CommandResult<UserResponse>> Handle(SaveUserCommand request, CancellationToken cancellationToken)
+        public async Task<CommandResult<UserResponse>> Handle(SaveNewUserCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var user = request.IsNewUser ?
-                    await _userRepository.Add(request.UserEntry.ToEntity()) :
-                    await _userRepository.Update(request.UserEntry.ToEntity(request.Id));
+                var user = await _userRepository.Add(request.UserEntry.ToEntity());
+
+                return CommandResult<UserResponse>.Success(user?.ToUserResponse());
+            }
+            catch (ExistingLoginException ex)
+            {
+                return CommandResult<UserResponse>.WithFailure(ex.Message);
+            }
+        }
+
+        public async Task<CommandResult<UserResponse>> Handle(SaveChangedUserCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var user = await _userRepository.Update(request.UserEntry.ToEntity(request.Id));
 
                 return CommandResult<UserResponse>.Success(user?.ToUserResponse());
             }
