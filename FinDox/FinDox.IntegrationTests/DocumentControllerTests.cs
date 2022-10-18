@@ -10,16 +10,52 @@ namespace FinDox.IntegrationTests
     public class DocumentControllerTests : BaseTest
     {
         [Test]
-        public async Task Post_should_add_successfully_the_document()
+        public async Task Post_should_add_successfully_the_document_then_delete_it()
         {
             var postedDocument = await PostDocument();
 
-            var docAccess = await GrantAccess(postedDocument.DocumentId);
-
-            var documentAfterPost = await GetDocument(postedDocument.DocumentId);
+            //Assert
+            postedDocument.Should().NotBeNull();
+            postedDocument.DocumentId.Should().BeGreaterThan(0);
 
             await DeleteDocument(postedDocument.DocumentId);
         }
+
+        [Test]
+        public async Task Download_should_download_the_posted_file()
+        {
+            var postedDocument = await PostDocument();
+
+            var response = await Client.GetAsync($"/Document/{postedDocument.DocumentId}/Download");
+
+            //Assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+
+            await DeleteDocument(postedDocument.DocumentId);
+        }
+
+        [Test]
+        public async Task GrantPermission_should_create_link_between_user_and_document()
+        {
+            var postedDocument = await PostDocument();
+
+            var exptectedPermissions = new UsersAndGroupsIds
+            {
+                GroupIds = new int[] { },
+                UserIds = new int[] { 1 }
+            };
+
+            var grantedPermission = await GrantAccess(postedDocument.DocumentId);
+            var permissions = await GetPermissions(postedDocument.DocumentId);
+
+            //Assert
+            grantedPermission.Should().NotBeNull();
+            grantedPermission.Should().BeEquivalentTo(exptectedPermissions);
+            permissions.Users.First(d => d.UserId == Constants.UserId).Should().NotBeNull();
+
+            await DeleteDocument(postedDocument.DocumentId);
+        }
+
 
         private async Task<Document> PostDocument()
         {
@@ -32,6 +68,7 @@ namespace FinDox.IntegrationTests
             Client.DefaultRequestHeaders.Add("description", "test description");
             var response = await Client.PostAsync("/Document", multipartFormContent);
 
+            //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.Created);
 
             return JsonConvert.DeserializeObject<Document>(await response.Content.ReadAsStringAsync());
@@ -41,6 +78,7 @@ namespace FinDox.IntegrationTests
         {
             var response = await Client.DeleteAsync($"/Document/{documentId}");
 
+            //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         }
 
@@ -49,6 +87,8 @@ namespace FinDox.IntegrationTests
             var response = await Client.GetAsync($"/Document/{documentId}");
 
             var document = JsonConvert.DeserializeObject<DocumentWithFile>(await response.Content.ReadAsStringAsync());
+
+            //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             document.Should().NotBeNull();
             document.DocumentId.Should().Be(documentId);
@@ -65,9 +105,21 @@ namespace FinDox.IntegrationTests
             };
             var response = await Client.PutAsJsonAsync($"/Document/{documentId}/GrantPermission", usersAndGroups);
 
+            //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
 
             return JsonConvert.DeserializeObject<UsersAndGroupsIds>(await response.Content.ReadAsStringAsync());
+        }
+
+        private async Task<DocumentPermissionResponse> GetPermissions(int documentId)
+        {
+            var response = await Client.GetFromJsonAsync<DocumentPermissionResponse>($"/Document/{documentId}/Permissions");
+
+            //Assert
+            response.Should().NotBeNull();
+            response.Users.Should().Satisfy(d => d.UserId == Constants.UserId);
+
+            return response;
         }
     }
 }
