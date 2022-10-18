@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using System.Net.Http.Json;
 
 
-namespace FinDox.IntegrationTests.Groups
+namespace FinDox.IntegrationTests
 {
     public class GroupControllerTests : BaseTest
     {
@@ -72,7 +72,7 @@ namespace FinDox.IntegrationTests.Groups
                 UserId = postedUser.UserId
             };
 
-            var httpResponse = await Client.PostAsJsonAsync<UserGroup>($"/Group/AddUserToGroup", userGroup);
+            var httpResponse = await Client.PostAsJsonAsync($"/Group/AddUserToGroup", userGroup);
             var returnedUserGroup = JsonConvert.DeserializeObject<UserGroup>(await httpResponse.Content.ReadAsStringAsync());
 
             var usersFromGroup = await Client.GetFromJsonAsync<GroupWithUsers>($"/Group/{postedGroup.GroupId}/users");

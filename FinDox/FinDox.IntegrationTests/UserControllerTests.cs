@@ -3,7 +3,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
 
-namespace FinDox.IntegrationTests.Users
+namespace FinDox.IntegrationTests
 {
     public class UserControllerTests : BaseTest
     {

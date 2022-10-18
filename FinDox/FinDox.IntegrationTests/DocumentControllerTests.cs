@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
-namespace FinDox.IntegrationTests.Documents
+namespace FinDox.IntegrationTests
 {
     public class DocumentControllerTests : BaseTest
     {
@@ -16,11 +16,9 @@ namespace FinDox.IntegrationTests.Documents
 
             var docAccess = await GrantAccess(postedDocument.DocumentId);
 
-            var documentAfterPost = await GetDocument(postedDocument.DocumentId, true);
+            var documentAfterPost = await GetDocument(postedDocument.DocumentId);
 
             await DeleteDocument(postedDocument.DocumentId);
-
-            var documentAfterDelete = await GetDocument(postedDocument.DocumentId, false);
         }
 
         private async Task<Document> PostDocument()
@@ -46,15 +44,9 @@ namespace FinDox.IntegrationTests.Documents
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         }
 
-        private async Task<Document> GetDocument(int documentId, bool documentExists)
+        private async Task<Document> GetDocument(int documentId)
         {
             var response = await Client.GetAsync($"/Document/{documentId}");
-
-            if (!documentExists)
-            {
-                response.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);
-                return null;
-            }
 
             var document = JsonConvert.DeserializeObject<DocumentWithFile>(await response.Content.ReadAsStringAsync());
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -71,7 +63,7 @@ namespace FinDox.IntegrationTests.Documents
                 GroupIds = new int[] { },
                 UserIds = new int[] { Constants.UserId }
             };
-            var response = await Client.PutAsJsonAsync<UsersAndGroupsIds>($"/Document/{documentId}/GrantPermission", usersAndGroups);
+            var response = await Client.PutAsJsonAsync($"/Document/{documentId}/GrantPermission", usersAndGroups);
 
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
 

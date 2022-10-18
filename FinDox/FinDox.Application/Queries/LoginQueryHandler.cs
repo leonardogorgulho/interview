@@ -29,8 +29,6 @@ namespace FinDox.Application.Queries
                 return null;
             }
 
-            //get token
-
             return new LoginResponse
             {
                 User = user,
