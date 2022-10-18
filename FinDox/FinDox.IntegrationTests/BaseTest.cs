@@ -31,8 +31,8 @@ namespace FinDox.IntegrationTests
         {
             var httpResponse = await Client.PostAsJsonAsync("/account/login", new LoginRequest
             {
-                Login = "admin",
-                Password = "202CB962AC59075B964B07152D234B70"
+                Login = Constants.Login,
+                Password = Constants.Password
             });
             var content = Newtonsoft.Json.JsonConvert.DeserializeObject<LoginResponse>(
                 await httpResponse.Content.ReadAsStringAsync());
