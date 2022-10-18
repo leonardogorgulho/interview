@@ -7,7 +7,7 @@ using System.Net.Http.Json;
 
 namespace FinDox.IntegrationTests.Groups
 {
-    public class GroupCRUDOperationsTests : BaseTest
+    public class GroupControllerTests : BaseTest
     {
         [Test]
         public async Task Post_should_add_successfully_the_group()

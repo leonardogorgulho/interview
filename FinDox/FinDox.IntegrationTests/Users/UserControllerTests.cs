@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 
 namespace FinDox.IntegrationTests.Users
 {
-    public class UserCRUDOperationsTests : BaseTest
+    public class UserControllerTests : BaseTest
     {
         [Test, Order(1)]
         public async Task Post_should_add_successfully_the_user()
