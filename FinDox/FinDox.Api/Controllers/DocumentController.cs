@@ -15,10 +15,13 @@ namespace FinDox.Api.Controllers
     public class DocumentController : FinDoxDocumentSecurityController
     {
         IMediator _mediator;
+        IConfiguration _configuration;
 
-        public DocumentController(IMediator mediator) : base(mediator)
+        public DocumentController(IMediator mediator,
+            IConfiguration configuration) : base(mediator, configuration)
         {
             _mediator = mediator;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -133,7 +136,7 @@ namespace FinDox.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            if (!await CanLoggedUserDownload(id))
+            if (!await CanLoggedUserHaveAccess(id))
             {
                 return Unauthorized("Logged user does not have access to this document.");
             }
@@ -152,7 +155,7 @@ namespace FinDox.Api.Controllers
         [Route("{id}/Download")]
         public async Task<IActionResult> GetDownload(int id)
         {
-            if (!await CanLoggedUserDownload(id))
+            if (!await CanLoggedUserHaveAccess(id))
             {
                 return Unauthorized("Logged user does not have access to this document.");
             }
