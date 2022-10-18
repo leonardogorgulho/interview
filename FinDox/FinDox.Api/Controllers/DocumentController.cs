@@ -70,9 +70,9 @@ namespace FinDox.Api.Controllers
                 GroupIds = entry.GroupIds
             }));
 
-            if (!result)
+            if (!result.IsValid)
             {
-                return BadRequest();
+                return BadRequest(result.Errors);
             }
 
             return Ok(entry);
@@ -96,9 +96,9 @@ namespace FinDox.Api.Controllers
                 GroupIds = entry.GroupIds
             }));
 
-            if (!result)
+            if (!result.IsValid)
             {
-                return BadRequest();
+                return BadRequest(result.Errors);
             }
 
             return Ok(entry);
@@ -115,6 +115,11 @@ namespace FinDox.Api.Controllers
         public async Task<IActionResult> GetPermissions(int id)
         {
             var docs = await _mediator.Send(new GetDocumentPermissionQuery(id));
+
+            if (docs == null)
+            {
+                return NotFound();
+            }
 
             return Ok(docs);
         }

@@ -14,9 +14,9 @@ namespace FinDox.Repository
     public class UserRepository : IUserRepository
     {
         private readonly AppConnectionFactory _appConnectionFactory;
-        private readonly ILogger<IGroupRepository> _logger;
+        private readonly ILogger<IUserRepository> _logger;
 
-        public UserRepository(AppConnectionFactory appConnectionFactory, ILogger<IGroupRepository> logger)
+        public UserRepository(AppConnectionFactory appConnectionFactory, ILogger<IUserRepository> logger)
         {
             _appConnectionFactory = appConnectionFactory;
             _logger = logger;

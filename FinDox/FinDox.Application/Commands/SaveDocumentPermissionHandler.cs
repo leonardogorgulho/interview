@@ -1,11 +1,13 @@
-﻿using FinDox.Domain.Interfaces;
+﻿using FinDox.Domain.DataTransfer;
+using FinDox.Domain.Exceptions;
+using FinDox.Domain.Interfaces;
 using MediatR;
 
 namespace FinDox.Application.Commands
 {
     public class SaveDocumentPermissionHandler :
-        IRequestHandler<GrantDocumentPermission, bool>,
-        IRequestHandler<RemoveDocumentPermission, bool>
+        IRequestHandler<GrantDocumentPermission, CommandResult<bool>>,
+        IRequestHandler<RemoveDocumentPermission, CommandResult<bool>>
     {
         private readonly IDocumentRepository _documentRepository;
 
@@ -14,14 +16,22 @@ namespace FinDox.Application.Commands
             _documentRepository = documentRepository;
         }
 
-        public async Task<bool> Handle(GrantDocumentPermission request, CancellationToken cancellationToken)
+        public async Task<CommandResult<bool>> Handle(GrantDocumentPermission request, CancellationToken cancellationToken)
         {
-            return await _documentRepository.GrantAccess(request.Permission);
+            try
+            {
+                var grantedObject = await _documentRepository.GrantAccess(request.Permission);
+                return CommandResult<bool>.Success(grantedObject);
+            }
+            catch (InvalidDocumentPermissionEntryException ex)
+            {
+                return CommandResult<bool>.WithFailure(ex.Message);
+            }
         }
 
-        public async Task<bool> Handle(RemoveDocumentPermission request, CancellationToken cancellationToken)
+        public async Task<CommandResult<bool>> Handle(RemoveDocumentPermission request, CancellationToken cancellationToken)
         {
-            return await _documentRepository.RemoveAccess(request.Permission);
+            return CommandResult<bool>.Success(await _documentRepository.RemoveAccess(request.Permission));
         }
     }
 }

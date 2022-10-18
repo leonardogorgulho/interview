@@ -3,7 +3,7 @@ using MediatR;
 
 namespace FinDox.Application.Commands
 {
-    public class GrantDocumentPermission : IRequest<bool>
+    public class GrantDocumentPermission : IRequest<CommandResult<bool>>
     {
         public DocumentPermissionEntry Permission { get; set; }
 

@@ -1,8 +1,11 @@
 ﻿using Dapper;
 using FinDox.Domain.DataTransfer;
 using FinDox.Domain.Entities;
+using FinDox.Domain.Exceptions;
 using FinDox.Domain.Interfaces;
 using FinDox.Domain.Types;
+using Microsoft.Extensions.Logging;
+using Npgsql;
 using System.Data;
 using static Dapper.SqlMapper;
 
@@ -11,10 +14,12 @@ namespace FinDox.Repository
     public class DocumentRepository : IDocumentRepository
     {
         private readonly AppConnectionFactory _appConnectionFactory;
+        private readonly ILogger<IUserRepository> _logger;
 
-        public DocumentRepository(AppConnectionFactory appConnectionFactory)
+        public DocumentRepository(AppConnectionFactory appConnectionFactory, ILogger<IUserRepository> logger)
         {
             _appConnectionFactory = appConnectionFactory;
+            _logger = logger;
         }
 
         public async Task<Document> Add(Document entity)
@@ -167,9 +172,10 @@ namespace FinDox.Repository
 
                 return true;
             }
-            catch (Exception ex)
+            catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.ForeignKeyViolation)
             {
-                return false;
+                _logger.LogError(ex.Message);
+                throw new InvalidDocumentPermissionEntryException(documentPermission);
             }
         }
 
