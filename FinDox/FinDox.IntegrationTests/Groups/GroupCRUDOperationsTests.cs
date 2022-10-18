@@ -61,7 +61,7 @@ namespace FinDox.IntegrationTests.Groups
         }
 
         [Test]
-        public async Task AddUser()
+        public async Task AddUser_should_link_user_to_group()
         {
             var postedGroup = await PostGroup();
             var postedUser = await PostUser();
@@ -75,8 +75,11 @@ namespace FinDox.IntegrationTests.Groups
             var httpResponse = await Client.PostAsJsonAsync<UserGroup>($"/Group/AddUserToGroup", userGroup);
             var returnedUserGroup = JsonConvert.DeserializeObject<UserGroup>(await httpResponse.Content.ReadAsStringAsync());
 
+            var usersFromGroup = await Client.GetFromJsonAsync<GroupWithUsers>($"/Group/{postedGroup.GroupId}/users");
+
             httpResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             userGroup.Should().BeEquivalentTo(returnedUserGroup);
+            postedUser.Should().BeEquivalentTo(usersFromGroup.Users.FirstOrDefault(u => u.UserId == returnedUserGroup.UserId));
 
             await DeleteGroup(postedGroup.GroupId);
             await DeleteUser(postedUser.UserId);
