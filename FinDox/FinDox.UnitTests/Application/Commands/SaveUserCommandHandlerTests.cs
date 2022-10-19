@@ -50,7 +50,7 @@ namespace FinDox.UnitTests.Application.Commands
         }
 
         [Test]
-        public async Task Handle_should_return_failure_when_login_already_exists()
+        public async Task Handle_should_return_failure_when_added_existing_login()
         {
             //Arrange
             var userEntry = _fixture.Create<NewUserRequest>();
@@ -91,6 +91,28 @@ namespace FinDox.UnitTests.Application.Commands
             result.IsValid.Should().BeTrue();
             result.GetType().Should().Be(typeof(CommandResult<UserResponse>));
             result.Data.Should().BeEquivalentTo(expectedUserResponse);
+        }
+
+        [Test]
+        public async Task Handle_should_return_failure_when_updated_existing_login()
+        {
+            //Arrange
+            var userEntry = _fixture.Create<ChangeUserRequest>();
+            userEntry.Login = "admin";
+            var command = new SaveChangedUserCommand(userEntry, 1);
+            var expectedException = new ExistingLoginException(userEntry.Login);
+            _userRepositoryMock.Setup(d => d.Update(It.IsAny<User>()))
+                .ThrowsAsync(expectedException);
+
+            //Act
+            var result = await InstanceUnderTest.Handle(command, It.IsAny<CancellationToken>());
+
+            //Assert
+            result.Should().NotBeNull();
+            result.IsValid.Should().BeFalse();
+            result.GetType().Should().Be(typeof(CommandResult<UserResponse>));
+            result.Data.Should().BeNull();
+            result.Errors.Should().Contain(expectedException.Message);
         }
     }
 }
