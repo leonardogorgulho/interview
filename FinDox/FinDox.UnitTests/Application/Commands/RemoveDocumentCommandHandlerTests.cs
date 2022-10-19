@@ -7,7 +7,7 @@ namespace FinDox.UnitTests.Application.Commands
 {
     public class RemoveDocumentCommandHandlerTests : BaseTest<RemoveDocumentCommandHandler>
     {
-        Mock<IDocumentRepository> _documentRepositoryMock;
+        private Mock<IDocumentRepository> _documentRepositoryMock;
 
         public override RemoveDocumentCommandHandler CreateInstanceUnderTest()
         {

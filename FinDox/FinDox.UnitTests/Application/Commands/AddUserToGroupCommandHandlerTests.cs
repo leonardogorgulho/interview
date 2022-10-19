@@ -8,7 +8,7 @@ namespace FinDox.UnitTests.Application.Commands
 {
     public class AddUserToGroupCommandHandlerTests : BaseTest<AddUserToGroupCommandHandler>
     {
-        Mock<IGroupRepository> _groupRepositoryMock;
+        private Mock<IGroupRepository> _groupRepositoryMock;
 
         public override AddUserToGroupCommandHandler CreateInstanceUnderTest()
         {

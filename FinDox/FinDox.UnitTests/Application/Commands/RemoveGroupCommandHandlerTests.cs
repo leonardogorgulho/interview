@@ -7,7 +7,7 @@ namespace FinDox.UnitTests.Application.Commands
 {
     public class RemoveGroupCommandHandlerTests : BaseTest<RemoveGroupCommandHandler>
     {
-        Mock<IGroupRepository> _groupRepositoryMock;
+        private Mock<IGroupRepository> _groupRepositoryMock;
 
         public override RemoveGroupCommandHandler CreateInstanceUnderTest()
         {
@@ -37,7 +37,7 @@ namespace FinDox.UnitTests.Application.Commands
         }
 
         [Test]
-        public async Task Handle_should_return_false_when_document_is_not_removed()
+        public async Task Handle_should_return_false_when_group_is_not_removed()
         {
             //Arrange
             var request = new RemoveGroupCommand(1);
