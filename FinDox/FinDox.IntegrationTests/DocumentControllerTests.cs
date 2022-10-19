@@ -12,6 +12,7 @@ namespace FinDox.IntegrationTests
         [Test]
         public async Task Post_should_add_successfully_the_document_then_delete_it()
         {
+            //Act
             var postedDocument = await PostDocument();
 
             //Assert
@@ -24,8 +25,10 @@ namespace FinDox.IntegrationTests
         [Test]
         public async Task Download_should_download_the_posted_file()
         {
+            //Arrange
             var postedDocument = await PostDocument();
 
+            //Act
             var response = await Client.GetAsync($"/Document/{postedDocument.DocumentId}/Download");
 
             //Assert
@@ -37,18 +40,19 @@ namespace FinDox.IntegrationTests
         [Test]
         public async Task GrantPermission_should_create_link_between_user_and_document()
         {
+            //Arrange
             var postedDocument = await PostDocument();
-
             var exptectedPermissions = new UsersAndGroupsIds
             {
                 GroupIds = new int[] { },
                 UserIds = new int[] { 1 }
             };
 
+            //Act
             var grantedPermission = await GrantAccess(postedDocument.DocumentId);
-            var permissions = await GetPermissions(postedDocument.DocumentId);
 
             //Assert
+            var permissions = await GetPermissions(postedDocument.DocumentId);
             grantedPermission.Should().NotBeNull();
             grantedPermission.Should().BeEquivalentTo(exptectedPermissions);
             permissions.Users.First(d => d.UserId == Constants.UserId).Should().NotBeNull();
@@ -59,12 +63,14 @@ namespace FinDox.IntegrationTests
 
         private async Task<Document> PostDocument()
         {
+            //Arrange
             var fileStreamContent = new StreamContent(File.OpenRead("Assets\\test.pdf"));
             fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
 
             using var multipartFormContent = new MultipartFormDataContent();
             multipartFormContent.Add(fileStreamContent, name: "file", fileName: "test.pdf");
 
+            //Act
             Client.DefaultRequestHeaders.Add("description", "test description");
             var response = await Client.PostAsync("/Document", multipartFormContent);
 
@@ -76,6 +82,7 @@ namespace FinDox.IntegrationTests
 
         private async Task DeleteDocument(int documentId)
         {
+            //Act
             var response = await Client.DeleteAsync($"/Document/{documentId}");
 
             //Assert
@@ -84,6 +91,7 @@ namespace FinDox.IntegrationTests
 
         private async Task<Document> GetDocument(int documentId)
         {
+            //Act
             var response = await Client.GetAsync($"/Document/{documentId}");
 
             var document = JsonConvert.DeserializeObject<DocumentWithFile>(await response.Content.ReadAsStringAsync());
@@ -98,6 +106,7 @@ namespace FinDox.IntegrationTests
 
         private async Task<UsersAndGroupsIds> GrantAccess(int documentId)
         {
+            //Act
             var usersAndGroups = new UsersAndGroupsIds
             {
                 GroupIds = new int[] { },
@@ -113,6 +122,7 @@ namespace FinDox.IntegrationTests
 
         private async Task<DocumentPermissionResponse> GetPermissions(int documentId)
         {
+            //Act
             var response = await Client.GetFromJsonAsync<DocumentPermissionResponse>($"/Document/{documentId}/Permissions");
 
             //Assert
