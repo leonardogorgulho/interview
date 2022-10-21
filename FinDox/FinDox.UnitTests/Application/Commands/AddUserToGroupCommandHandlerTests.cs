@@ -43,7 +43,7 @@ namespace FinDox.UnitTests.Application.Commands
         }
 
         [Test]
-        public async Task Handle_should_return_failqure_when_there_is_a_invalid_id()
+        public async Task Handle_should_return_failure_when_there_is_a_invalid_id()
         {
             //Arrange
             var request = new AddUserToGroupCommand(new()
