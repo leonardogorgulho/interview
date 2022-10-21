@@ -5,6 +5,7 @@ using FinDox.Repository;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.IdentityModel.Tokens;
@@ -105,6 +106,13 @@ if (app.Environment.IsDevelopment())
         {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             context.Response.ContentType = Text.Plain;
+
+            var exception = context.Features.Get<IExceptionHandlerFeature>();
+            if (exception != null)
+            {
+                var logger = new LoggerFactory().CreateLogger<Program>();
+                logger.LogError(exception.Error.StackTrace);
+            }
 
             await context.Response.WriteAsync("An error has occurred, please contact the administrator.");
         });
